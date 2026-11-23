@@ -30,6 +30,8 @@ table{width:100%;font-size:13px;border-collapse:collapse} td,th{border-bottom:1p
 #lockScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0f172a;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center}
 #lockScreen input{max-width:320px;text-align:center;font-size:22px;letter-spacing:4px}
 #lockScreen button{max-width:320px}
+.topBar{display:flex;gap:8px;position:sticky;top:0;z-index:100;background:#0f172a;padding:8px 0}
+.topBar button{margin-top:0}
 @media print{body{background:#fff;color:#000} .no-print{display:none} .card{background:#fff;color:#000;border:1px solid #000} .hide-comm{ display:none !important; } .cardBody{display:block !important} }
 .hide-comm{ display:none !important; }
 </style>
@@ -38,7 +40,6 @@ table{width:100%;font-size:13px;border-collapse:collapse} td,th{border-bottom:1p
 
 <div id="lockScreen">
 <h1 style="color:#facc15;margin:0">🏆 SRT COMMODITIES</h1>
-<p style="color:#cbd5e1">🔒 Private Hisab - Password Daalo</p>
 <div id="setPassDiv" style="width:100%;max-width:320px;display:none">
 <input id="newPass" type="password" placeholder="Naya Password">
 <input id="newPass2" type="password" placeholder="Dobara Password">
@@ -54,6 +55,10 @@ table{width:100%;font-size:13px;border-collapse:collapse} td,th{border-bottom:1p
 
 <div id="mainApp" style="display:none">
 <h2>🏆 SRT COMMODITIES</h2>
+<div class="topBar no-print">
+<button onclick="refreshApp()" style="background:#22c55e;color:#fff;flex:1">🔄 Refresh</button>
+<button onclick="lockApp()" style="background:#334155;color:#fff;flex:1">🔒 Lock Karo</button>
+</div>
 <div style="display:flex;gap:8px" class="no-print"><button onclick="openAllCards()" style="background:#22c55e;color:#fff">🔽 Sab Kholo</button><button onclick="closeAllCards()" style="background:#94a3b8">🔼 Sab Band Karo</button></div>
 
 <div class="card no-print" id="sec-entry" style="border:2px solid #facc15">
@@ -71,7 +76,7 @@ table{width:100%;font-size:13px;border-collapse:collapse} td,th{border-bottom:1p
 </div></div>
 
 <div class="card no-print" id="sec-client">
-<div class="cardHead" onclick="toggleCard('client')"><h3>➕ 2. Client</h3><span class="arrow" id="arrow-client">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('client')"><h3>➕ 2. Client</h3><span class="arrow" id="arrow-client">▶</span></div>
 <div class="cardBody" id="body-client">
 <input id="cName" placeholder="Client Ka Naam">
 <input id="cId" placeholder="Client ID - 101,102,103">
@@ -80,7 +85,7 @@ table{width:100%;font-size:13px;border-collapse:collapse} td,th{border-bottom:1p
 </div></div>
 
 <div class="card no-print" id="sec-vendor">
-<div class="cardHead" onclick="toggleCard('vendor')"><h3>🏢 3. Vendor</h3><span class="arrow" id="arrow-vendor">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('vendor')"><h3>🏢 3. Vendor</h3><span class="arrow" id="arrow-vendor">▶</span></div>
 <div class="cardBody" id="body-vendor">
 <input id="vName" placeholder="Vendor Ka Naam">
 <button onclick="addVendor()" style="background:#c084fc">Vendor Add Karo</button>
@@ -88,90 +93,99 @@ table{width:100%;font-size:13px;border-collapse:collapse} td,th{border-bottom:1p
 </div></div>
 
 <div class="card no-print" id="sec-admin">
-<div class="cardHead" onclick="toggleCard('admin')"><h3>👑 4. Admin</h3><span class="arrow" id="arrow-admin">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('admin')"><h3>👑 4. Admin</h3><span class="arrow" id="arrow-admin">▶</span></div>
 <div class="cardBody" id="body-admin">
 <input id="aName" placeholder="Admin Ka Naam">
 <button onclick="addAdmin()" style="background:#f97316;color:#fff">Admin Add Karo</button>
 <div id="adminListDiv"></div>
 </div></div>
 
+<div class="card no-print" id="sec-itemManage" style="border:2px solid #22c55e">
+<div class="cardHead" onclick="toggleCard('itemManage')"><h3>📦 5. Item Add / Remove</h3><span class="arrow" id="arrow-itemManage">▶</span></div>
+<div class="cardBody" id="body-itemManage">
+<input id="newItemName" placeholder="Naya Item Ka Naam - Jaise Aluminium">
+<button onclick="addNewItem()" style="background:#22c55e;color:#fff">➕ Item Add Karo</button>
+<div id="itemListDiv"></div>
+</div></div>
+
 <div class="card no-print" id="sec-security" style="border:1px solid #22c55e">
-<div class="cardHead" onclick="toggleCard('security')"><h3>🔒 5. Security</h3><span class="arrow" id="arrow-security">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('security')"><h3>🔒 6. Security</h3><span class="arrow" id="arrow-security">▶</span></div>
 <div class="cardBody" id="body-security">
 <div style="display:flex;gap:8px"><button onclick="changePassword()" style="background:#f97316;color:#fff">🔑 Password Badlo</button><button onclick="lockApp()" style="background:#ef4444;color:#fff">🔒 Lock Karo</button></div>
+<button onclick="refreshApp()" style="background:#22c55e;color:#fff">🔄 Refresh App</button>
 </div></div>
 
 <div class="card no-print" id="sec-brkSetting" style="border:1px solid #f97316">
-<div class="cardHead" onclick="toggleCard('brk')"><h3>💰 6. Client Brokerage</h3><span class="arrow" id="arrow-brk">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('brk')"><h3>💰 7. Client Brokerage</h3><span class="arrow" id="arrow-brk">▶</span></div>
 <div class="cardBody" id="body-brk">
 <select id="brkClient"><option value="">Client Select Karo</option></select>
-<select id="brkItem"><option value="">Item Select Karo</option><option>Copper</option><option>Crude Oil</option><option>Zinc</option><option>Natural Gas</option><option>Gold</option><option>Mgold</option><option>Silver</option><option>Msilver</option></select>
+<select id="brkItem"><option value="">Item Select Karo</option></select>
 <input id="brkAmt" type="number" placeholder="Brokerage Per Lot">
 <button onclick="saveBrkSetting()" style="background:#f97316;color:#fff">💰 Brokerage Fix Karo</button>
 <div id="brkList"></div>
 </div></div>
 
 <div class="card no-print" id="sec-commSetting" style="border:1px solid #c084fc">
-<div class="cardHead" onclick="toggleCard('comm')"><h3>💜 7. Vendor Commission - Default</h3><span class="arrow" id="arrow-comm">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('comm')"><h3>💜 8. Vendor Commission - Default</h3><span class="arrow" id="arrow-comm">▶</span></div>
 <div class="cardBody" id="body-comm">
 <select id="commVendor"><option value="">Vendor Select Karo</option></select>
-<select id="commItem"><option value="">Item Select Karo</option><option>Copper</option><option>Crude Oil</option><option>Zinc</option><option>Natural Gas</option><option>Gold</option><option>Mgold</option><option>Silver</option><option>Msilver</option></select>
+<select id="commItem"><option value="">Item Select Karo</option></select>
 <input id="commAmt" type="number" placeholder="Commission Per Lot">
 <button onclick="saveCommSetting()" style="background:#c084fc">💜 Commission Fix Karo</button>
 <div id="commList"></div>
 </div></div>
 
 <div class="card no-print" id="sec-commClientSetting" style="border:2px solid #facc15">
-<div class="cardHead" onclick="toggleCard('cc')"><h3>⭐ 8. Vendor Commission - Har Client Se Alag</h3><span class="arrow" id="arrow-cc">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('cc')"><h3>⭐ 9. Vendor Commission - Har Client Se Alag</h3><span class="arrow" id="arrow-cc">▶</span></div>
 <div class="cardBody" id="body-cc">
 <select id="ccVendor"><option value="">Vendor Select Karo</option></select>
 <select id="ccClient"><option value="">Client Select Karo</option></select>
-<select id="ccItem"><option value="">Item Select Karo</option><option>Copper</option><option>Crude Oil</option><option>Zinc</option><option>Natural Gas</option><option>Gold</option><option>Mgold</option><option>Silver</option><option>Msilver</option></select>
+<select id="ccItem"><option value="">Item Select Karo</option></select>
 <input id="ccAmt" type="number" placeholder="Is Client Se Commission Per Lot">
 <button onclick="saveClientCommSetting()" style="background:#facc15">⭐ Commission Fix Karo</button>
 <div id="ccList"></div>
 </div></div>
 
 <div class="card no-print" id="sec-filter">
-<div class="cardHead" onclick="toggleCard('filter')"><h3>👀 9. Filter</h3><span class="arrow" id="arrow-filter">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('filter')"><h3>👀 10. Filter</h3><span class="arrow" id="arrow-filter">▶</span></div>
 <div class="cardBody" id="body-filter">
 <select id="filterAdmin" onchange="render()"><option value="All">Sabhi Admin</option></select>
 <select id="filterVendor" onchange="render()"><option value="All">Sabhi Vendor</option></select>
 <select id="filterClient" onchange="render()"><option value="All">Sabhi Client</option></select>
 <select id="filterId" onchange="render()"><option value="All">Sabhi ID</option></select>
-<select id="filterItem" onchange="render()"><option value="All">Sabhi Item</option><option>Copper</option><option>Crude Oil</option><option>Zinc</option><option>Natural Gas</option><option>Gold</option><option>Mgold</option><option>Silver</option><option>Msilver</option></select>
+<select id="filterItem" onchange="render()"><option value="All">Sabhi Item</option></select>
 <label class="toggle"><input type="checkbox" id="hideCommChk" onchange="toggleComm()"> <span id="hideLabel">👁️ Commission Hide Karo</span></label>
 <p id="hideNote" style="font-size:12px;color:#facc15;margin:5px 0 0"></p>
 </div></div>
 
 <div class="card" id="sec-itemHisab">
-<div class="cardHead" onclick="toggleCard('itemHisab')"><h3>📦 Item Wise Hisab</h3><span class="arrow" id="arrow-itemHisab">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('itemHisab')"><h3>📦 Item Wise Hisab</h3><span class="arrow" id="arrow-itemHisab">▶</span></div>
 <div class="cardBody" id="body-itemHisab"><div id="itemHisab"></div></div></div>
 
 <div class="card" id="sec-adminHisab">
-<div class="cardHead" onclick="toggleCard('adminHisab')"><h3>👑 Admin Wise Hisab</h3><span class="arrow" id="arrow-adminHisab">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('adminHisab')"><h3>👑 Admin Wise Hisab</h3><span class="arrow" id="arrow-adminHisab">▶</span></div>
 <div class="cardBody" id="body-adminHisab"><div id="adminHisab"></div><div id="adminDetail" style="margin-top:10px"></div></div></div>
 
 <div class="card" id="sec-vendorHisab">
-<div class="cardHead" onclick="toggleCard('vendorHisab')"><h3>🏢 Vendor Wise Hisab</h3><span class="arrow" id="arrow-vendorHisab">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('vendorHisab')"><h3>🏢 Vendor Wise Hisab</h3><span class="arrow" id="arrow-vendorHisab">▶</span></div>
 <div class="cardBody" id="body-vendorHisab"><div id="vendorHisab"></div><div id="vendorDetail" style="margin-top:10px"></div></div></div>
 
 <div class="card" id="sec-total">
-<div class="cardHead" onclick="toggleCard('total')"><h3>💰 Total</h3><span class="arrow" id="arrow-total">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('total')"><h3>💰 Total</h3><span class="arrow" id="arrow-total">▶</span></div>
 <div class="cardBody" id="body-total">
-<div class="flex"><div><small>Total P&L</small><br><b id="totalPL" style="font-size:20px">₹0</b></div><div><small>Brokerage</small><br><b id="totalBrk" style="font-size:20px">₹0</b></div></div>
-<div class="flex" style="margin-top:8px"><div class="comm-col"><small>Commission</small><br><b id="totalComm" style="font-size:20px">₹0</b></div><div><small>Net Total <span id="netFormula" style="font-size:11px;color:#cbd5e1"></span></small><br><b id="netTotal" style="font-size:20px">₹0</b></div></div>
+<div class="flex"><div><small>Total P&L</small><br><b id="totalPL" style="font-size:20px">₹0</b></div><div><small>Brokerage Amount</small><br><b id="totalBrk" style="font-size:20px">₹0</b></div></div>
+<div class="flex" style="margin-top:8px"><div class="comm-col"><small>Commission Amount</small><br><b id="totalComm" style="font-size:20px">₹0</b></div><div><small>Net Total <span id="netFormula" style="font-size:11px;color:#cbd5e1"></span></small><br><b id="netTotal" style="font-size:20px">₹0</b></div></div>
 </div></div>
 
 <div class="card" id="sec-report">
-<div class="cardHead" onclick="toggleCard('report')"><h3>📋 Report - <span id="reportTitle">Sabhi Client</span></h3><span class="arrow" id="arrow-report">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('report')"><h3>📋 Report - <span id="reportTitle">Sabhi Client</span></h3><span class="arrow" id="arrow-report">▶</span></div>
 <div class="cardBody" id="body-report">
 <p style="font-size:13px">Date: <span id="todayDate"></span> <span id="adminInTitle" style="font-size:13px;color:#facc15"></span> <span id="vendorInTitle" style="font-size:13px;color:#c084fc"></span> <span id="itemInTitle" style="font-size:13px;color:#22c55e"></span></p>
 <table><tr><th>Client ID</th><th>Admin</th><th>Client</th><th>Vendor</th><th>Item</th><th>Qty</th><th>P&L</th><th>Brk</th><th class="comm-col">Comm</th><th>Net</th><th class="no-print">Action</th></tr><tbody id="list"></tbody></table>
 </div></div>
 
 <div class="no-print" id="sec-pdf">
-<div class="cardHead" onclick="toggleCard('pdf')"><h3>📥 All PDF</h3><span class="arrow" id="arrow-pdf">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('pdf')"><h3>📥 All PDF</h3><span class="arrow" id="arrow-pdf">▶</span></div>
 <div class="cardBody" id="body-pdf">
 <button onclick="downloadAllSeparatePDF()" style="background:#111827;color:#fff;border:2px solid #facc15;font-size:17px">📥 ALL PDF - Sabki Alag-Alag PDF</button>
 <button class="btnBlue" onclick="downloadAllClientsPDF()">👤 All Clients Ki Alag-Alag PDF</button>
@@ -179,16 +193,23 @@ table{width:100%;font-size:13px;border-collapse:collapse} td,th{border-bottom:1p
 <button onclick="downloadAllAdminsPDF()" style="background:#f97316;color:#fff">👑 All Admins Ki Alag-Alag PDF</button>
 <button class="btnBlue" onclick="downloadClientPDF()">📥 <span id="pdfBtnText">PDF Download Karo</span></button>
 <button class="btnHide" onclick="toggleCommBtn()">👁️ Commission Hide / Show Karo</button>
-<button class="btnReset" onclick="resetEntries()">🔄 Entry Reset Karo</button>
+<button class="btnReset" onclick="resetEntries()">🔄 Sirf Entry Amount Reset Karo</button>
 <button class="btn3" onclick="clearAll()">Sab Delete Karo</button>
 </div></div>
 
-<!-- BACKUP - DUSRE PHONE ME DATA LE JANE KE LIYE -->
+<div class="card no-print" style="border:2px solid #facc15">
+<div class="cardHead" onclick="toggleCard('history')"><h3>📅 11. Saturday History</h3><span class="arrow" id="arrow-history">▶</span></div>
+<div class="cardBody" id="body-history">
+<button onclick="archiveNow()" style="background:#facc15">📦 Abhi Archive Karo (Saturday Close)</button>
+<div id="historyList"></div>
+<div id="historyDetail" style="margin-top:10px"></div>
+</div></div>
+
 <div class="card no-print" style="border:2px solid #22c55e">
-<div class="cardHead" onclick="toggleCard('backup')"><h3>🔄 Backup - Dusre Phone Me Data</h3><span class="arrow" id="arrow-backup">▶️</span></div>
+<div class="cardHead" onclick="toggleCard('backup')"><h3>🔄 Backup</h3><span class="arrow" id="arrow-backup">▶</span></div>
 <div class="cardBody" id="body-backup">
-<button onclick="exportData()" style="background:#22c55e;color:#fff">📤 Backup Export Karo - File Banegi</button>
-<button onclick="document.getElementById('importFile').click()" style="background:#3b82f6;color:#fff">📥 Backup Import Karo - Dusre Phone Ka Data Lao</button>
+<button onclick="exportData()" style="background:#22c55e;color:#fff">📤 Backup Export Karo</button>
+<button onclick="document.getElementById('importFile').click()" style="background:#3b82f6;color:#fff">📥 Backup Import Karo</button>
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
 </div></div>
 </div>
@@ -199,7 +220,7 @@ function toggleCard(id){
 let body=document.getElementById('body-'+id); let arrow=document.getElementById('arrow-'+id);
 if(!body) return;
 let isOpen = body.classList.contains('open');
-if(isOpen){ body.classList.remove('open'); if(arrow) arrow.innerText='▶️'; openCards=openCards.filter(x=>x!=id); }
+if(isOpen){ body.classList.remove('open'); if(arrow) arrow.innerText='▶'; openCards=openCards.filter(x=>x!=id); }
 else { body.classList.add('open'); if(arrow) arrow.innerText='▼'; if(!openCards.includes(id)) openCards.push(id); }
 localStorage.setItem('openCards',JSON.stringify(openCards));
 }
@@ -208,18 +229,102 @@ document.querySelectorAll('.cardBody').forEach(b=>{
 let id=b.id.replace('body-','');
 let shouldOpen = openCards.includes(id);
 if(shouldOpen) b.classList.add('open'); else b.classList.remove('open');
-let arrow=document.getElementById('arrow-'+id); if(arrow) arrow.innerText = shouldOpen ? '▼' : '▶️';
+let arrow=document.getElementById('arrow-'+id); if(arrow) arrow.innerText = shouldOpen ? '▼' : '▶';
 });
 }
-function openAllCards(){ openCards=['entry','client','vendor','admin','security','brk','comm','cc','filter','itemHisab','adminHisab','vendorHisab','total','report','pdf','backup']; localStorage.setItem('openCards',JSON.stringify(openCards)); applyCards(); }
+function openAllCards(){ openCards=['entry','client','vendor','admin','itemManage','security','brk','comm','cc','filter','itemHisab','adminHisab','vendorHisab','total','report','pdf','history','backup']; localStorage.setItem('openCards',JSON.stringify(openCards)); applyCards(); }
 function closeAllCards(){ openCards=[]; localStorage.setItem('openCards',JSON.stringify(openCards)); applyCards(); }
 applyCards();
+
+function refreshApp(){
+  editId=null;
+  document.getElementById('entryTitle').innerText='📝 1. Entry';
+  let sb=document.getElementById('saveBtn'); if(sb) sb.innerText='✅ Save Karo';
+  let cb=document.getElementById('cancelBtn'); if(cb) cb.style.display='none';
+  resetItemRows();
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+  alert('✅ Refresh Ho Gaya!');
+}
+function getSaturdayDate(){
+  let d = new Date();
+  if(d.getDay()==0) d.setDate(d.getDate()-1);
+  else if(d.getDay()!=6){ let diff=(d.getDay()+1)%7; d.setDate(d.getDate()-diff); }
+  return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) + ' (Saturday)';
+}
+function getHistory(){ try{return JSON.parse(localStorage.getItem('srtHistory')||'[]')}catch(e){return []} }
+function saveHistory(h){ localStorage.setItem('srtHistory',JSON.stringify(h)); }
+function makeSnapshot(label){
+  return {date: label, time: new Date().toLocaleString('en-IN'), trades: JSON.parse(JSON.stringify(trades)), admins: [...admins], clients: JSON.parse(JSON.stringify(clients)), vendors: [...vendors], brkSettings: JSON.parse(JSON.stringify(brkSettings)), commSettings: JSON.parse(JSON.stringify(commSettings)), items: [...itemsList]};
+}
+function doWeeklyReset(){
+  trades=[]; editId=null; selectedAdmin='All'; selectedVendor='All';
+  localStorage.setItem('t1',JSON.stringify(trades));
+  localStorage.setItem('selAdmin','All');
+  localStorage.setItem('selVendor','All');
+}
+function archiveNow(){
+  if(!trades.length) return alert('Archive karne ke liye koi Entry hi nahi hai');
+  if(!confirm('Saturday Close karna hai?')) return;
+  let label = prompt('Is Saturday ka naam / Date likho', getSaturdayDate());
+  if(label==null) return;
+  let h = getHistory();
+  h.unshift(makeSnapshot(label));
+  saveHistory(h);
+  doWeeklyReset();
+  alert('Ho gaya! ✅\n'+label+' ka Amount History me save ho gaya.');
+  save();
+}
+function checkSundayReset(){
+  let today = new Date();
+  if(today.getDay()!=0) return;
+  let todayStr = today.toDateString();
+  let lastReset = localStorage.getItem('lastSundayReset') || '';
+  if(lastReset == todayStr) return;
+  if(!trades.length){ localStorage.setItem('lastSundayReset', todayStr); return; }
+  let h = getHistory();
+  let label = getSaturdayDate();
+  h.unshift(makeSnapshot(label));
+  saveHistory(h);
+  doWeeklyReset();
+  localStorage.setItem('lastSundayReset', todayStr);
+  setTimeout(()=>{ alert('🔄 Sunday Auto Reset Ho Gaya!'); }, 800);
+}
+function renderHistory(){
+  let h = getHistory();
+  let el = document.getElementById('historyList');
+  if(!el) return;
+  if(!h.length){ el.innerHTML='<p style="font-size:13px;color:#94a3b8">Abhi koi purana Saturday save nahi hai</p>'; let hd=document.getElementById('historyDetail'); if(hd) hd.innerHTML=''; return; }
+  el.innerHTML = h.map((item,i)=>{
+    let tp=0,tb=0,tc=0,tn=0; (item.trades||[]).forEach(t=>{ tp+=t.pnl||0; tb+=t.brk||0; tc+=t.comm||0; tn+= (t.pnl||0)-(t.brk||0)-(t.comm||0); });
+    return `<div class="chip"><span>📅 <b>${item.date}</b><br><span style="font-size:12px;color:#94a3b8">${(item.trades||[]).length} Entry | P&L ₹${tp.toFixed(0)} | Brk Amt ₹${tb.toFixed(0)} | Comm Amt ₹${tc.toFixed(0)} | Net ₹${tn.toFixed(0)}</span></span><div class="chipBtns"><button class="small pdfBtn" onclick="viewHistory(${i})">👀 Dekho</button><button class="small del" onclick="deleteHistory(${i})">🗑️</button></div></div>`;
+  }).join('');
+}
+function viewHistory(i){
+  let h = getHistory(); let item = h[i]; if(!item) return;
+  let rows = (item.trades||[]).map(t=>{ let n=(t.pnl||0)-(t.brk||0)-(t.comm||0); return `<tr><td>${t.clientId||'-'}</td><td>${t.admin||'-'}</td><td>${t.c}</td><td>${t.v||'-'}</td><td>${t.item||'-'}</td><td>${t.qty||'-'}</td><td>₹${(t.pnl||0).toFixed(0)}</td><td>₹${(t.brk||0).toFixed(0)}</td><td>₹${(t.comm||0).toFixed(0)}</td><td>₹${n.toFixed(0)}</td></tr>` }).join('');
+  let tp=0,tb=0,tc=0,tn=0; (item.trades||[]).forEach(t=>{ tp+=t.pnl||0; tb+=t.brk||0; tc+=t.comm||0; tn+=(t.pnl||0)-(t.brk||0)-(t.comm||0); });
+  let adminTxt = (item.admins||[]).join(', ') || 'Koi nahi';
+  let vendorTxt = (item.vendors||[]).join(', ') || 'Koi nahi';
+  let clientTxt = (item.clients||[]).map(c=> c.name + ' ('+(c.ids||[]).join(', ')+')').join(', ') || 'Koi nahi';
+  let brkTxt = (item.brkSettings||[]).map(s=> s.client+' - '+s.item+' ₹'+s.amt+' / Lot').join(' | ') || 'Koi nahi';
+  let commTxt = (item.commSettings||[]).map(s=> s.vendor+' - '+s.item+' '+(s.client?('Client: '+s.client):'(Default)')+' ₹'+s.amt+' / Lot').join(' | ') || 'Koi nahi';
+  document.getElementById('historyDetail').innerHTML = `<div style="background:#0f172a;padding:12px;border-radius:12px"><h3 style="margin:0">📅 ${item.date} <button class="small" onclick="document.getElementById('historyDetail').innerHTML=''" style="background:#94a3b8">✖️ Band</button></h3><p style="font-size:12px;color:#94a3b8">Save hua: ${item.time} | Total Entry: ${(item.trades||[]).length}</p><div class="flex"><div><small>P&L</small><br><b>₹${tp.toFixed(0)}</b></div><div><small>Brk Amt</small><br><b>₹${tb.toFixed(0)}</b></div><div><small>Comm Amt</small><br><b>₹${tc.toFixed(0)}</b></div><div><small>Net</small><br><b>₹${tn.toFixed(0)}</b></div></div><p style="font-size:13px"><b>👑 Admin:</b> ${adminTxt}<br><b>👤 Client:</b> ${clientTxt}<br><b>🏢 Vendor:</b> ${vendorTxt}<br><b>💰 Brokerage Rate:</b> ${brkTxt}<br><b>💜 Commission Rate:</b> ${commTxt}</p><table style="margin-top:10px"><tr><th>ID</th><th>Admin</th><th>Client</th><th>Vendor</th><th>Item</th><th>Qty</th><th>P&L</th><th>Brk</th><th>Comm</th><th>Net</th></tr>${rows||'<tr><td colspan=10>Koi Entry nahi thi</td></tr>'}</table><button onclick="downloadHistoryPDF(${i})" style="background:#3b82f6;color:#fff">📥 Is Saturday Ki PDF</button></div>`;
+}
+function deleteHistory(i){
+  if(!confirm('Ye purana Saturday delete karna hai?')) return;
+  let h=getHistory(); h.splice(i,1); saveHistory(h); document.getElementById('historyDetail').innerHTML=''; renderHistory();
+}
+function downloadHistoryPDF(i){
+  let h=getHistory(); let item=h[i];
+  buildSinglePDF('Saturday Report - '+item.date, 'Date: '+item.date+' | Admin: '+(item.admins||[]).join(', ')+' | Vendor: '+(item.vendors||[]).join(', '), item.trades||[], false);
+}
 function exportData(){
 let data={};
-['srtPass','ad1','c1','v1','t1','brkSet','commSet','hideComm','selAdmin','selVendor','openCards'].forEach(k=>{ data[k]=localStorage.getItem(k); });
+['srtPass','ad1','c1','v1','t1','brkSet','commSet','hideComm','selAdmin','selVendor','openCards','srtHistory','lastSundayReset','itemList'].forEach(k=>{ data[k]=localStorage.getItem(k); });
 let blob=new Blob([JSON.stringify(data)],{type:'application/json'});
 let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='SRT-Backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
-alert('Backup ban gaya! Is file ko WhatsApp se dusre phone ko bhej do.');
+alert('Backup ban gaya!');
 }
 function importData(input){
 let file=input.files[0]; if(!file) return;
@@ -227,12 +332,12 @@ let reader=new FileReader();
 reader.onload=function(e){
 try{
 let data=JSON.parse(e.target.result);
-if(!data.t1 && !data.c1) return alert('Ye sahi Backup file nahi hai');
+if(!data.t1 && !data.c1 && !data.srtHistory) return alert('Ye sahi Backup file nahi hai');
 if(!confirm('Is Backup se purana data replace ho jayega. Pakka?')) return;
 Object.keys(data).forEach(k=>{ if(data[k]!=null) localStorage.setItem(k,data[k]); });
-alert('Ho gaya! Sara data aa gaya. Ab App dobara khulega.');
+alert('Ho gaya! Sara data + History aa gaya.');
 location.reload();
-}catch(err){ alert('File kharab hai, dobara Export karke bhejo'); }
+}catch(err){ alert('File kharab hai'); }
 };
 reader.readAsText(file); input.value='';
 }
@@ -246,9 +351,9 @@ function setPassword(){
 let a=document.getElementById('newPass').value.trim();
 let b=document.getElementById('newPass2').value.trim();
 if(a.length<4) return alert('Password kam se kam 4 digit ka rakho');
-if(a!==b) return alert('Dono password same nahi hai, dobara likho');
+if(a!==b) return alert('Dono password same nahi hai');
 localStorage.setItem('srtPass',a);
-alert('Password Set Ho Gaya! Ab yaad rakhna.');
+alert('Password Set Ho Gaya!');
 document.getElementById('lockScreen').style.display='none';
 document.getElementById('mainApp').style.display='block';
 render();
@@ -256,26 +361,25 @@ render();
 function unlockApp(){
 let p=document.getElementById('enterPass').value.trim();
 if(p===getSavedPass()){ document.getElementById('lockScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; document.getElementById('enterPass').value=''; document.getElementById('wrongMsg').innerText=''; render(); }
-else { document.getElementById('wrongMsg').innerText='❌ Galat Password! Dobara try karo'; document.getElementById('enterPass').value=''; }
+else { document.getElementById('wrongMsg').innerText='❌ Galat Password!'; document.getElementById('enterPass').value=''; }
 }
 function lockApp(){ document.getElementById('lockScreen').style.display='flex'; document.getElementById('mainApp').style.display='none'; checkLock(); window.scrollTo(0,0); }
 function changePassword(){
 let oldP=prompt('Purana Password daalo','');
 if(oldP==null) return;
 if(oldP!==getSavedPass()) return alert('Purana Password galat hai');
-let np=prompt('Naya Password daalo (kam se kam 4 digit)','');
+let np=prompt('Naya Password daalo','');
 if(!np || np.length<4) return alert('Password 4 digit se chota hai');
 localStorage.setItem('srtPass',np);
 alert('Password Badal Gaya!');
 }
 function forgotPass(){
-if(!confirm('Password bhool gaye? Agar Reset karoge to SAARA HISAB DELETE ho jayega aur naya password banana padega. Reset karna hai?')) return;
+if(!confirm('Password bhool gaye? Reset karne se SAARA HISAB + HISTORY DELETE ho jayega. Reset karna hai?')) return;
 let c=prompt('Reset karne ke liye YES likho','');
 if(c!=='YES') return alert('Reset cancel ho gaya');
 localStorage.clear(); location.reload();
 }
 checkLock();
-
 let admins=JSON.parse(localStorage.getItem('ad1')||'[]');
 let rawClients=JSON.parse(localStorage.getItem('c1')||'[]');
 let clients=rawClients.map(c=>{ if(typeof c=='string') return {name:c,ids:[]}; if(c.id && !c.ids) return {name:c.name,ids:[c.id]}; if(!c.ids) c.ids=[]; c.ids=sortIds(c.ids); return c; });
@@ -284,6 +388,7 @@ let trades=JSON.parse(localStorage.getItem('t1')||'[]');
 trades.forEach(t=>{ if(!t.item) t.item='-'; if(t.qty==null) t.qty=''; });
 let brkSettings=JSON.parse(localStorage.getItem('brkSet')||'[]');
 let commSettings=JSON.parse(localStorage.getItem('commSet')||'[]');
+let itemsList=JSON.parse(localStorage.getItem('itemList')||'["Copper","Crude Oil","Zinc","Natural Gas","Gold","Mgold","Silver","Msilver"]');
 let editId=null; let hideComm = localStorage.getItem('hideComm')=='1';
 let selectedAdmin = localStorage.getItem('selAdmin') || 'All';
 let selectedVendor = localStorage.getItem('selVendor') || 'All';
@@ -315,7 +420,23 @@ let def=commSettings.find(x=>x.vendor==vendor && x.item==item && (!x.client||x.c
 if(def) return {amt:def.amt, type:'default'};
 return null;
 }
-function save(){localStorage.setItem('ad1',JSON.stringify(admins));localStorage.setItem('c1',JSON.stringify(clients));localStorage.setItem('v1',JSON.stringify(vendors));localStorage.setItem('t1',JSON.stringify(trades));localStorage.setItem('brkSet',JSON.stringify(brkSettings));localStorage.setItem('commSet',JSON.stringify(commSettings));localStorage.setItem('hideComm',hideComm?'1':'0');localStorage.setItem('selAdmin',selectedAdmin);localStorage.setItem('selVendor',selectedVendor);render();}
+function save(){localStorage.setItem('ad1',JSON.stringify(admins));localStorage.setItem('c1',JSON.stringify(clients));localStorage.setItem('v1',JSON.stringify(vendors));localStorage.setItem('t1',JSON.stringify(trades));localStorage.setItem('brkSet',JSON.stringify(brkSettings));localStorage.setItem('commSet',JSON.stringify(commSettings));localStorage.setItem('itemList',JSON.stringify(itemsList));localStorage.setItem('hideComm',hideComm?'1':'0');localStorage.setItem('selAdmin',selectedAdmin);localStorage.setItem('selVendor',selectedVendor);render();}
+// ===== ITEM ADD / REMOVE =====
+function addNewItem(){
+let n=document.getElementById('newItemName').value.trim();
+if(!n) return alert('Item Ka Naam daalo');
+if(itemsList.some(x=>x.toLowerCase()==n.toLowerCase())) return alert('Ye Item pehle se hai');
+itemsList.push(n); document.getElementById('newItemName').value=''; save(); alert('Item Add Ho Gaya - '+n);
+}
+function editItem(i){
+let old=itemsList[i]; let n=prompt('Item ka naam edit karo',old); if(n==null) return; n=n.trim(); if(!n) return;
+let oldName=itemsList[i]; itemsList[i]=n; trades.forEach(t=>{ if(t.item==oldName) t.item=n; }); brkSettings.forEach(s=>{ if(s.item==oldName) s.item=n; }); commSettings.forEach(s=>{ if(s.item==oldName) s.item=n; }); save(); alert('Item Edit Ho Gaya');
+}
+function deleteItem(i){
+let name=itemsList[i];
+if(!confirm(name+' ko delete karna hai?')) return;
+itemsList.splice(i,1); save();
+}
 function saveBrkSetting(){
 let cl=document.getElementById('brkClient').value; let it=document.getElementById('brkItem').value; let amt=parseFloat(document.getElementById('brkAmt').value||'');
 if(!cl) return alert('Client Select Karo'); if(!it) return alert('Item Select Karo'); if(isNaN(amt)) return alert('Brokerage Per Lot daalo');
@@ -327,7 +448,7 @@ function deleteBrkSetting(i){ if(!confirm('Ye Brokerage setting delete karni hai
 function setClientBrk(clientName){
 let existing = brkSettings.filter(s=>s.client==clientName);
 let msg = existing.length ? 'Is Client ki pehle se Fix Brokerage Per Lot:\n'+existing.map(s=>s.item+' = ₹'+s.amt+' / Lot').join('\n')+'\n\n' : 'Is Client ki koi Brokerage Fix nahi hai.\n\n';
-let item = prompt(msg+'Kis Item ki Brokerage Per Lot set karni hai? Naam likho -\nCopper, Crude Oil, Zinc, Natural Gas, Gold, Mgold, Silver, Msilver','Copper');
+let item = prompt(msg+'Kis Item ki Brokerage Per Lot set karni hai? Naam likho -\n'+itemsList.join(', '), itemsList[0]||'');
 if(item==null) return; item=item.trim(); if(!item) return;
 let old = getBrkPerLot(clientName,item);
 let amtStr = prompt(clientName+' - '+item+' ki Brokerage PER LOT kitni?'+(old!=null?(' (Pehle wali: ₹'+old+' / Lot)'):''), old!=null?old:'');
@@ -345,7 +466,7 @@ document.getElementById('commAmt').value=''; save(); alert('Default Fix Ho Gaya!
 }
 function saveClientCommSetting(){
 let v=document.getElementById('ccVendor').value; let cl=document.getElementById('ccClient').value; let it=document.getElementById('ccItem').value; let amt=parseFloat(document.getElementById('ccAmt').value||'');
-if(!v) return alert('Vendor Select Karo'); if(!cl) return alert('Client Select Karo - Jiska Alag Hai'); if(!it) return alert('Item Select Karo'); if(isNaN(amt)) return alert('Commission Per Lot daalo');
+if(!v) return alert('Vendor Select Karo'); if(!cl) return alert('Client Select Karo'); if(!it) return alert('Item Select Karo'); if(isNaN(amt)) return alert('Commission Per Lot daalo');
 let ex=commSettings.find(x=>x.vendor==v && x.item==it && x.client==cl);
 if(ex) ex.amt=amt; else commSettings.push({vendor:v,item:it,client:cl,amt:amt});
 document.getElementById('ccAmt').value=''; save(); alert('Ho Gaya! ⭐\n'+v+' - '+it+' - Client: '+cl+' - Commission ₹'+amt+' Per Lot Fix ho gaya.');
@@ -353,13 +474,13 @@ document.getElementById('ccAmt').value=''; save(); alert('Ho Gaya! ⭐\n'+v+' - 
 function deleteCommSetting(i){ if(!confirm('Ye Commission setting delete karni hai?')) return; commSettings.splice(i,1); save(); }
 function setVendorComm(vendorName){
 let existing = commSettings.filter(s=>s.vendor==vendorName);
-let msg = existing.length ? 'Is Vendor ka pehle se Fix Commission Per Lot:\n'+existing.map(s=>s.item+' '+(s.client?('Client: '+s.client):'(Default - Sab Client)')+' = ₹'+s.amt+' / Lot').join('\n')+'\n\n' : 'Is Vendor ka koi Commission Fix nahi hai.\n\n';
-let item = prompt(msg+'Kis Item ka Commission Per Lot set karna hai? Naam likho -\nCopper, Crude Oil, Zinc, Natural Gas, Gold, Mgold, Silver, Msilver','Copper');
+let msg = existing.length ? 'Is Vendor ka pehle se Fix Commission Per Lot:\n'+existing.map(s=>s.item+' '+(s.client?('Client: '+s.client):'(Default)')+' = ₹'+s.amt+' / Lot').join('\n')+'\n\n' : 'Is Vendor ka koi Commission Fix nahi hai.\n\n';
+let item = prompt(msg+'Kis Item ka Commission Per Lot set karna hai? Naam likho -\n'+itemsList.join(', '), itemsList[0]||'');
 if(item==null) return; item=item.trim(); if(!item) return;
-let cl = prompt('Kis Client ke liye hai?\nKhali chhod do to DEFAULT - SAB Client ke liye lagega.\nEk Client ke liye alag hai to uska naam likho - jaise Rahul\n\nClients: '+clients.map(c=>c.name).join(', '),'');
+let cl = prompt('Kis Client ke liye hai?\nKhali chhod do to DEFAULT - SAB Client ke liye lagega.\nEk Client ke liye alag hai to uska naam likho\n\nClients: '+clients.map(c=>c.name).join(', '),'');
 if(cl==null) return; cl=cl.trim();
 let old = null; if(!cl){ let d=commSettings.find(x=>x.vendor==vendorName && x.item==item && (!x.client||x.client=='')); old = d? d.amt : null; } else { let d=commSettings.find(x=>x.vendor==vendorName && x.item==item && x.client==cl); old = d? d.amt : null; }
-let amtStr = prompt(vendorName+' - '+item+' '+(cl?('Client: '+cl+' '):'(Default - Sab Client) ')+'ka Commission PER LOT kitna?'+(old!=null?(' (Pehle wala: ₹'+old+' / Lot)'):''), old!=null?old:'');
+let amtStr = prompt(vendorName+' - '+item+' '+(cl?('Client: '+cl+' '):'(Default) ')+'ka Commission PER LOT kitna?'+(old!=null?(' (Pehle wala: ₹'+old+' / Lot)'):''), old!=null?old:'');
 if(amtStr==null) return; let amt=parseFloat(amtStr); if(isNaN(amt)) return alert('Sahi Commission daalo');
 let ex=commSettings.find(x=>x.vendor==vendorName && x.item==item && (x.client||'')==cl);
 if(ex) ex.amt=amt; else commSettings.push({vendor:vendorName,item:item,client:cl,amt:amt});
@@ -371,17 +492,16 @@ function deleteAdmin(i){let name=admins[i]; if(!confirm(name+' ko delete karna h
 function addVendor(){let n=document.getElementById('vName').value.trim(); if(!n) return alert('Vendor Naam daalo'); vendors.push(n); save(); alert('Vendor Add Ho Gaya'); document.getElementById('vName').value='';}
 function editVendor(i){let old=vendors[i]; let n=prompt('Vendor ka naam edit karo',old); if(n==null) return; n=n.trim(); if(!n) return; let oldName=vendors[i]; vendors[i]=n; trades.forEach(t=>{ if(t.v==oldName) t.v=n; }); commSettings.forEach(s=>{ if(s.vendor==oldName) s.vendor=n; }); if(selectedVendor==oldName) selectedVendor=n; save(); alert('Vendor Edit Ho Gaya');}
 function deleteVendor(i){let name=vendors[i]; if(!confirm(name+' ko delete karna hai?')) return; vendors.splice(i,1); if(selectedVendor==name) selectedVendor='All'; save();}
-function addClient(){let n=document.getElementById('cName').value.trim(); let idStr=document.getElementById('cId').value.trim(); if(!n) return alert('Naam daalo'); let ids=parseIds(idStr); if(!ids.length){ let inp=prompt('Client ID daalo - Multiple ho to comma se likho - 101,102,103','')||''; ids=parseIds(inp); } clients.push({name:n,ids:ids}); save(); alert('Client Add Ho Gaya - '+n+' IDs Sequence me: '+ids.join(', ')); document.getElementById('cName').value=''; document.getElementById('cId').value='';}
-function editClient(i){let old=clients[i]; let n=prompt('Client ka naam edit karo',old.name); if(n==null) return; n=n.trim(); if(!n) return; let nidStr=prompt('Client IDs edit karo - Multiple ho to comma se - 101,102,103',(sortIds(old.ids||[])).join(',')); if(nidStr==null) return; let nids=parseIds(nidStr); let oldName=old.name; clients[i]={name:n,ids:nids}; trades.forEach(t=>{ if(t.c==oldName) t.c=n; }); brkSettings.forEach(s=>{ if(s.client==oldName) s.client=n; }); commSettings.forEach(s=>{ if(s.client==oldName) s.client=n; }); save(); alert('Client Edit Ho Gaya - IDs Sequence me: '+nids.join(', '));}
+function addClient(){let n=document.getElementById('cName').value.trim(); let idStr=document.getElementById('cId').value.trim(); if(!n) return alert('Naam daalo'); let ids=parseIds(idStr); if(!ids.length){ let inp=prompt('Client ID daalo - Multiple ho to comma se likho - 101,102,103','')||''; ids=parseIds(inp); } clients.push({name:n,ids:ids}); save(); alert('Client Add Ho Gaya - '+n+' IDs: '+ids.join(', ')); document.getElementById('cName').value=''; document.getElementById('cId').value='';}
+function editClient(i){let old=clients[i]; let n=prompt('Client ka naam edit karo',old.name); if(n==null) return; n=n.trim(); if(!n) return; let nidStr=prompt('Client IDs edit karo - Multiple ho to comma se - 101,102,103',(sortIds(old.ids||[])).join(',')); if(nidStr==null) return; let nids=parseIds(nidStr); let oldName=old.name; clients[i]={name:n,ids:nids}; trades.forEach(t=>{ if(t.c==oldName) t.c=n; }); brkSettings.forEach(s=>{ if(s.client==oldName) s.client=n; }); commSettings.forEach(s=>{ if(s.client==oldName) s.client=n; }); save(); alert('Client Edit Ho Gaya - IDs: '+nids.join(', '));}
 function deleteClient(i){let name=clients[i].name; if(!confirm(name+' ko delete karna hai?')) return; clients.splice(i,1); save();}
 function toggleComm(){ hideComm=document.getElementById('hideCommChk').checked; save(); }
 function toggleCommBtn(){ hideComm=!hideComm; document.getElementById('hideCommChk').checked=hideComm; save(); }
 function selectAdmin(name){ selectedAdmin=name; document.getElementById('filterAdmin').value=name; save(); }
 function selectVendor(name){ selectedVendor=name; document.getElementById('filterVendor').value=name; save(); }
-function onClientChange(){ let c=document.getElementById('client').value; let sel=document.getElementById('clientIdSelect'); if(c=='Self'){ sel.innerHTML='<option value="">Client ID Select Karo</option>'; return; } let obj=getClientByName(c); if(!obj || !obj.ids.length){ sel.innerHTML='<option value="">Is Client ki koi ID nahi</option>'; return; } let sIds=sortIds(obj.ids); sel.innerHTML='<option value="">ID Select Karo - Sequence me</option>'+sIds.map(id=>`<option value="${id}">ID: ${id}</option>`).join(''); }
+function onClientChange(){ let c=document.getElementById('client').value; let sel=document.getElementById('clientIdSelect'); if(c=='Self'){ sel.innerHTML='<option value="">Client ID Select Karo</option>'; return; } let obj=getClientByName(c); if(!obj || !obj.ids.length){ sel.innerHTML='<option value="">Is Client ki koi ID nahi</option>'; return; } let sIds=sortIds(obj.ids); sel.innerHTML='<option value="">ID Select Karo</option>'+sIds.map(id=>`<option value="${id}">ID: ${id}</option>`).join(''); }
 function itemOptions(selVal){
-let opts=['Copper','Crude Oil','Zinc','Natural Gas','Gold','Mgold','Silver','Msilver'];
-return '<option value="">Item Select Karo</option>'+opts.map(o=>`<option ${o==selVal?'selected':''}>${o}</option>`).join('');
+return '<option value="">Item Select Karo</option>'+itemsList.map(o=>`<option ${o==selVal?'selected':''}>${o}</option>`).join('');
 }
 function autoFillRow(row){
 let c=document.getElementById('client').value; let v=document.getElementById('vendor').value;
@@ -460,8 +580,7 @@ function cancelEdit(){editId=null; document.getElementById('entryTitle').innerTe
 function deleteTrade(id){if(!confirm('Ye entry delete karni hai?')) return; trades=trades.filter(x=>x.id!=id); save();}
 function getFiltered(){let f=document.getElementById('filterClient').value; let fa=document.getElementById('filterAdmin').value; let fv=document.getElementById('filterVendor').value; let fid=document.getElementById('filterId').value; let fi=document.getElementById('filterItem').value; let list=trades; if(f && f!='All') list=list.filter(t=>t.c==f); if(fa && fa!='All') list=list.filter(t=>t.admin==fa); if(fv && fv!='All') list=list.filter(t=>t.v==fv); if(fid && fid!='All') list=list.filter(t=>t.clientId==fid.replace('ID: ','')); if(fi && fi!='All') list=list.filter(t=>(t.item||'-')==fi); return list;}
 function renderItemHisab(){
-let items=['Copper','Crude Oil','Zinc','Natural Gas','Gold','Mgold','Silver','Msilver'];
-let html=items.map(it=>{
+let html=itemsList.map(it=>{
 let list=trades.filter(t=>t.item==it);
 let tp=0,tb=0,tc=0,tn=0,tq=0; list.forEach(t=>{tp+=t.pnl; tb+=t.brk; tc+=t.comm; tn+=calcNet(t); tq+=parseFloat(t.qty||0);});
 return `<div class="chip"><span><span class="itemBadge">📦 ${it}</span> <span style="font-size:12px;color:#94a3b8">${list.length} Entry | Qty: ${tq}</span></span><span style="font-size:13px"><span class="${tp>=0?'green':'red'}">P&L ₹${tp.toFixed(0)}</span> | Brk ₹${tb.toFixed(0)} <span class="comm-col ${hideComm?'hide-comm':''}">| Comm ₹${tc.toFixed(0)}</span> | <b class="${tn>=0?'green':'red'}">Net ₹${tn.toFixed(0)}</b></span></div>`;
@@ -534,24 +653,29 @@ let asel=document.getElementById('admin'); let curA_sel=asel.value; asel.innerHT
 let sel=document.getElementById('client'); let curC=sel.value; sel.innerHTML='<option value="Self">Self</option>'+sortedClientsForDropdown.map(x=>'<option value="'+x.name+'">'+clientLabel(x)+'</option>').join(''); if(curC) sel.value=curC;
 let vsel=document.getElementById('vendor'); let curV=vsel.value; vsel.innerHTML='<option value="">Vendor Select Karo</option>'+vendors.map(x=>'<option>'+x+'</option>').join(''); if(curV) vsel.value=curV;
 if(!editId) onClientChange();
+document.getElementById('itemListDiv').innerHTML = itemsList.length? itemsList.map((it,i)=>`<div class="chip"><span><span class="itemBadge">📦 ${it}</span></span><div class="chipBtns"><button class="small edit" onclick="editItem(${i})">✏️</button><button class="small del" onclick="deleteItem(${i})">🗑️</button></div></div>`).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Item Nahi</p>';
 let showClients = sortClients(clients);
 document.getElementById('adminListDiv').innerHTML = admins.length? admins.map((a,i)=>{ let cnt=trades.filter(t=>t.admin==a).length; let pdfBtn = cnt>0 ? `<button class="small pdfBtn" onclick="downloadAdminSinglePDF('${a.replace(/'/g,"\\'")}')">📥 PDF (${cnt})</button>` : `<button class="small noEntryBtn" onclick="alert('${a.replace(/'/g,"\\'")} ki 0 Entry hai')">No Entry</button>`; return `<div class="chip"><span>👑 ${a} <span style="font-size:12px;color:#94a3b8">${cnt} Entry</span></span><div class="chipBtns">${pdfBtn}<button class="small edit" onclick="editAdmin(${i})">✏️</button><button class="small del" onclick="deleteAdmin(${i})">🗑️</button></div></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Admin Nahi</p>';
-document.getElementById('vendorListDiv').innerHTML = vendors.length? vendors.map((v,i)=>{ let tc=trades.filter(t=>t.v==v).reduce((s,t)=>s+t.comm,0); let cnt=trades.filter(t=>t.v==v).length; let myComm=commSettings.filter(s=>s.vendor==v); let commTxt=myComm.length? `<div style="font-size:11px;color:#c084fc;margin-top:3px">💜 Comm: ${myComm.map(s=>s.item+' '+(s.client?('⭐ '+s.client):'(Default)')+' ₹'+s.amt+' / Lot').join(' | ')}</div>` : ''; let pdfBtn = cnt>0 ? `<button class="small pdfBtn" onclick="downloadVendorSinglePDF('${v.replace(/'/g,"\\'")}')">📥 PDF (${cnt})</button>` : `<button class="small noEntryBtn" onclick="alert('${v.replace(/'/g,"\\'")} ki 0 Entry hai')">No Entry</button>`; return `<div class="chip"><span>🏢 ${v} <span class="commBadge ${hideComm?'hide-comm':''}">Comm: ₹${tc.toFixed(0)}</span> <span style="font-size:12px;color:#94a3b8">${cnt} Entry</span>${commTxt}</span><div class="chipBtns">${pdfBtn}<button class="small" style="background:#c084fc;color:#fff" onclick="setVendorComm('${v.replace(/'/g,"\\'")}')">💜 Comm Set</button><button class="small edit" onclick="editVendor(${i})">✏️</button><button class="small del" onclick="deleteVendor(${i})">🗑️</button></div></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Vendor Nahi</p>';
-document.getElementById('clientListDiv').innerHTML = showClients.length? showClients.map((c)=>{ let realIdx=clients.indexOf(c); let cnt=trades.filter(t=>t.c==c.name).length; let myBrk=brkSettings.filter(s=>s.client==c.name); let brkTxt=myBrk.length? `<div style="font-size:11px;color:#f97316;margin-top:3px">💰 Brk: ${myBrk.map(s=>s.item+' ₹'+s.amt+' / Lot').join(' | ')}</div>` : ''; let pdfBtn = cnt>0 ? `<button class="small pdfBtn" onclick="downloadClientSinglePDF('${c.name.replace(/'/g,"\\'")}')">📥 PDF (${cnt})</button>` : `<button class="small noEntryBtn" onclick="alert('${c.name.replace(/'/g,"\\'")} ki 0 Entry hai')">No Entry</button>`; return `<div class="chip"><span>${sortIds(c.ids||[]).map(id=>`<span class="idBadge">ID: ${id}</span>`).join(' ')} 👤 ${c.name} <span style="font-size:12px;color:#94a3b8">${cnt} Entry</span>${brkTxt}</span><div class="chipBtns">${pdfBtn}<button class="small" style="background:#f97316;color:#fff" onclick="setClientBrk('${c.name.replace(/'/g,"\\'")}')">💰 Brk Set</button><button class="small edit" onclick="editClient(${realIdx})">✏️</button><button class="small del" onclick="deleteClient(${realIdx})">🗑️</button></div></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Client Nahi</p>';
+document.getElementById('vendorListDiv').innerHTML = vendors.length? vendors.map((v,i)=>{ let tc=trades.filter(t=>t.v==v).reduce((s,t)=>s+t.comm,0); let cnt=trades.filter(t=>t.v==v).length; let myComm=commSettings.filter(s=>s.vendor==v); let commTxt=myComm.length? `<div style="font-size:11px;color:#c084fc;margin-top:3px">💜 Comm Rate: ${myComm.map(s=>s.item+' '+(s.client?('⭐ '+s.client):'(Default)')+' ₹'+s.amt+' / Lot').join(' | ')}</div>` : ''; let pdfBtn = cnt>0 ? `<button class="small pdfBtn" onclick="downloadVendorSinglePDF('${v.replace(/'/g,"\\'")}')">📥 PDF (${cnt})</button>` : `<button class="small noEntryBtn" onclick="alert('${v.replace(/'/g,"\\'")} ki 0 Entry hai')">No Entry</button>`; return `<div class="chip"><span>🏢 ${v} <span class="commBadge ${hideComm?'hide-comm':''}">Comm Amt: ₹${tc.toFixed(0)}</span> <span style="font-size:12px;color:#94a3b8">${cnt} Entry</span>${commTxt}</span><div class="chipBtns">${pdfBtn}<button class="small" style="background:#c084fc;color:#fff" onclick="setVendorComm('${v.replace(/'/g,"\\'")}')">💜 Comm Set</button><button class="small edit" onclick="editVendor(${i})">✏️</button><button class="small del" onclick="deleteVendor(${i})">🗑️</button></div></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Vendor Nahi</p>';
+document.getElementById('clientListDiv').innerHTML = showClients.length? showClients.map((c)=>{ let realIdx=clients.indexOf(c); let cnt=trades.filter(t=>t.c==c.name).length; let myBrk=brkSettings.filter(s=>s.client==c.name); let brkTxt=myBrk.length? `<div style="font-size:11px;color:#f97316;margin-top:3px">💰 Brk Rate: ${myBrk.map(s=>s.item+' ₹'+s.amt+' / Lot').join(' | ')}</div>` : ''; let pdfBtn = cnt>0 ? `<button class="small pdfBtn" onclick="downloadClientSinglePDF('${c.name.replace(/'/g,"\\'")}')">📥 PDF (${cnt})</button>` : `<button class="small noEntryBtn" onclick="alert('${c.name.replace(/'/g,"\\'")} ki 0 Entry hai')">No Entry</button>`; return `<div class="chip"><span>${sortIds(c.ids||[]).map(id=>`<span class="idBadge">ID: ${id}</span>`).join(' ')} 👤 ${c.name} <span style="font-size:12px;color:#94a3b8">${cnt} Entry</span>${brkTxt}</span><div class="chipBtns">${pdfBtn}<button class="small" style="background:#f97316;color:#fff" onclick="setClientBrk('${c.name.replace(/'/g,"\\'")}')">💰 Brk Set</button><button class="small edit" onclick="editClient(${realIdx})">✏️</button><button class="small del" onclick="deleteClient(${realIdx})">🗑️</button></div></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Client Nahi</p>';
 let brkCl=document.getElementById('brkClient'); let curBrkCl=brkCl.value; brkCl.innerHTML='<option value="">Client Select Karo</option>'+sortClients(clients).map(x=>'<option value="'+x.name+'">'+clientLabel(x)+'</option>').join(''); if(curBrkCl) brkCl.value=curBrkCl;
+let brkIt=document.getElementById('brkItem'); let curBrkIt=brkIt.value; brkIt.innerHTML='<option value="">Item Select Karo</option>'+itemsList.map(x=>'<option>'+x+'</option>').join(''); if(curBrkIt) brkIt.value=curBrkIt;
 let commV=document.getElementById('commVendor'); let curCommV=commV.value; commV.innerHTML='<option value="">Vendor Select Karo</option>'+vendors.map(x=>'<option>'+x+'</option>').join(''); if(curCommV) commV.value=curCommV;
+let commIt=document.getElementById('commItem'); let curCommIt=commIt.value; commIt.innerHTML='<option value="">Item Select Karo</option>'+itemsList.map(x=>'<option>'+x+'</option>').join(''); if(curCommIt) commIt.value=curCommIt;
 let ccV=document.getElementById('ccVendor'); let curCcV=ccV.value; ccV.innerHTML='<option value="">Vendor Select Karo</option>'+vendors.map(x=>'<option>'+x+'</option>').join(''); if(curCcV) ccV.value=curCcV;
 let ccCl=document.getElementById('ccClient'); let curCcCl=ccCl.value; ccCl.innerHTML='<option value="">Client Select Karo</option>'+sortClients(clients).map(x=>'<option value="'+x.name+'">'+clientLabel(x)+'</option>').join(''); if(curCcCl) ccCl.value=curCcCl;
-document.getElementById('brkList').innerHTML = brkSettings.length? brkSettings.map((s,i)=>`<div class="chip"><span><span class="brkBadge">💰 ${s.client} - ${s.item} - Brk ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteBrkSetting(${i})">🗑️</button></div>`).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Brokerage Fix nahi hai</p>';
+let ccIt=document.getElementById('ccItem'); let curCcIt=ccIt.value; ccIt.innerHTML='<option value="">Item Select Karo</option>'+itemsList.map(x=>'<option>'+x+'</option>').join(''); if(curCcIt) ccIt.value=curCcIt;
+document.getElementById('brkList').innerHTML = brkSettings.length? brkSettings.map((s,i)=>`<div class="chip"><span><span class="brkBadge">💰 ${s.client} - ${s.item} - Brk Rate ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteBrkSetting(${i})">🗑️</button></div>`).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Brokerage Fix nahi hai</p>';
 let defComms=commSettings.filter(s=>!s.client||s.client=='');
-document.getElementById('commList').innerHTML = defComms.length? defComms.map((s)=>{ let idx=commSettings.indexOf(s); return `<div class="chip"><span><span class="commBadge">💜 ${s.vendor} - ${s.item} - Default - Comm ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteCommSetting(${idx})">🗑️</button></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Default Commission Fix nahi hai</p>';
+document.getElementById('commList').innerHTML = defComms.length? defComms.map((s)=>{ let idx=commSettings.indexOf(s); return `<div class="chip"><span><span class="commBadge">💜 ${s.vendor} - ${s.item} - Default - Comm Rate ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteCommSetting(${idx})">🗑️</button></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Default Commission Fix nahi hai</p>';
 let clientComms=commSettings.filter(s=>s.client && s.client!='');
-document.getElementById('ccList').innerHTML = clientComms.length? clientComms.map((s)=>{ let idx=commSettings.indexOf(s); return `<div class="chip"><span><span class="clientCommBadge">⭐ ${s.vendor} - ${s.item} - Client: ${s.client} - Comm ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteCommSetting(${idx})">🗑️</button></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Client Wise Commission Fix nahi hai</p>';
+document.getElementById('ccList').innerHTML = clientComms.length? clientComms.map((s)=>{ let idx=commSettings.indexOf(s); return `<div class="chip"><span><span class="clientCommBadge">⭐ ${s.vendor} - ${s.item} - Client: ${s.client} - Comm Rate ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteCommSetting(${idx})">🗑️</button></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Client Wise Commission Fix nahi hai</p>';
 let fsel=document.getElementById('filterClient'); let cur=fsel.value; fsel.innerHTML='<option value="All">Sabhi Client</option><option value="Self">Self</option>'+sortClients(clients).map(x=>'<option value="'+x.name+'">'+clientLabel(x)+'</option>').join(''); if(cur) fsel.value=cur;
 let fasel=document.getElementById('filterAdmin'); fasel.value=selectedAdmin; fasel.innerHTML='<option value="All">Sabhi Admin</option>'+admins.map(x=>'<option>'+x+'</option>').join(''); fasel.value=selectedAdmin; selectedAdmin=fasel.value;
 let fVsel=document.getElementById('filterVendor'); fVsel.value=selectedVendor; fVsel.innerHTML='<option value="All">Sabhi Vendor</option>'+vendors.map(x=>'<option>'+x+'</option>').join(''); fVsel.value=selectedVendor; selectedVendor=fVsel.value;
 let allIds=[]; clients.forEach(c=> (c.ids||[]).forEach(id=>{ if(!allIds.includes(id)) allIds.push(id); })); trades.forEach(t=>{ if(t.clientId && !allIds.includes(t.clientId)) allIds.push(t.clientId); }); allIds=sortIds(allIds);
 let fIdSel=document.getElementById('filterId'); let curId=fIdSel.value; fIdSel.innerHTML='<option value="All">Sabhi ID</option>'+allIds.map(id=>`<option>ID: ${id}</option>`).join(''); if(curId) fIdSel.value=curId;
+let fItSel=document.getElementById('filterItem'); let curFIt=fItSel.value; fItSel.innerHTML='<option value="All">Sabhi Item</option>'+itemsList.map(x=>'<option>'+x+'</option>').join(''); if(curFIt) fItSel.value=curFIt;
 let list=getFiltered(); let tp=0,tb=0,tc=0,tn=0; list.forEach(t=>{tp+=t.pnl; tb+=t.brk; tc+=t.comm; tn+=calcNet(t);});
 document.getElementById('totalPL').innerText='₹'+tp.toFixed(0); document.getElementById('totalBrk').innerText='₹'+tb.toFixed(0); document.getElementById('totalComm').innerText='₹'+tc.toFixed(0); document.getElementById('netTotal').innerText='₹'+tn.toFixed(0); document.getElementById('netTotal').style.color=tn>=0?'#22c55e':'#ef4444';
 document.getElementById('netFormula').innerText = hideComm ? '(P&L - Brokerage)' : '(P&L - Brk - Comm)';
@@ -563,7 +687,7 @@ let fiVal=document.getElementById('filterItem').value; document.getElementById('
 document.getElementById('pdfBtnText').innerText = 'PDF Download Karo';
 document.getElementById('hideLabel').innerText = hideComm ? '🙈 Commission HIDE Hai' : '👁️ Commission Hide Karo';
 document.querySelectorAll('.comm-col').forEach(el=>{ if(hideComm) el.classList.add('hide-comm'); else el.classList.remove('hide-comm'); });
-renderItemHisab(); renderAdminHisab(); renderVendorHisab();
+renderItemHisab(); renderAdminHisab(); renderVendorHisab(); renderHistory();
 let sortedList = [...list].sort((a,b)=> idNum(a.clientId)-idNum(b.clientId));
 document.getElementById('list').innerHTML=sortedList.map(t=>{let n=calcNet(t); return `<tr><td><span class="idBadge">ID: ${t.clientId||'-'}</span></td><td>${t.admin||'-'}</td><td>${t.c}</td><td>${t.v||'-'}</td><td><span class="itemBadge">${t.item||'-'}</span></td><td>${t.qty||'-'}</td><td class="${t.pnl>=0?'green':'red'}">₹${t.pnl.toFixed(0)}</td><td>₹${t.brk.toFixed(0)}</td><td class="comm-col ${hideComm?'hide-comm':''}">₹${t.comm.toFixed(0)}</td><td class="${n>=0?'green':'red'}">₹${n.toFixed(0)}</td><td class="no-print"><button class="small edit" onclick="editTrade(${t.id})">✏️ Edit</button><button class="small del" onclick="deleteTrade(${t.id})">🗑️</button></td></tr>`}).join('') || '<tr><td colspan=11>Abhi koi entry nahi</td></tr>';
 applyCards();
@@ -577,14 +701,15 @@ let sorted = [...list].sort((a,b)=> idNum(a.clientId)-idNum(b.clientId));
 let rows = sorted.map(t=>{let n= isClient ? calcClientNet(t) : calcNet(t); let commTd = (hideComm||isClient) ? '' : `<td>₹${t.comm.toFixed(0)}</td>`; if(isClient) return `<tr><td><span style="background:#22c55e;color:#fff;padding:2px 6px;border-radius:5px">${t.item||'-'}</span></td><td>${t.qty||'-'}</td><td style="color:${t.pnl>=0?'green':'red'}">₹${t.pnl.toFixed(0)}</td><td>₹${t.brk.toFixed(0)}</td><td style="color:${n>=0?'green':'red'}">₹${n.toFixed(0)}</td></tr>`; return `<tr><td>${t.clientId||'-'}</td><td>${t.admin||'-'}</td><td>${t.c}</td><td>${t.v||'-'}</td><td>${t.item||'-'}</td><td>${t.qty||'-'}</td><td style="color:${t.pnl>=0?'green':'red'}">₹${t.pnl.toFixed(0)}</td><td>₹${t.brk.toFixed(0)}</td>${commTd}<td style="color:${n>=0?'green':'red'}">₹${n.toFixed(0)}</td></tr>`}).join('');
 let note = isClient ? '<p style="text-align:center;font-size:12px;color:#666">Net Balance = Profit / Loss - Brokerage</p>' : (hideComm ? '<p style="text-align:center;font-size:12px;color:#666">Commission Hidden - Net = P&L - Brokerage</p>' : '<p style="text-align:center;font-size:12px;color:#666">Net = P&L - Brokerage - Commission</p>');
 let thRow = isClient ? '<tr><th>Item</th><th>Qty</th><th>Profit / Loss</th><th>Brokerage</th><th>Net Balance</th></tr>' : `<tr><th>Client ID</th><th>Admin</th><th>Client</th><th>Vendor</th><th>Item</th><th>Qty</th><th>P&L</th><th>Brk</th>${commTh}<th>Net</th></tr>`;
-let html = `<html><head><title>SRT - ${titleText}</title><style>body{font-family:Arial;padding:20px;color:#000} h1{text-align:center;margin:0} h2{text-align:center;margin:5px 0} table{width:100%;border-collapse:collapse;margin-top:15px} th,td{border:1px solid #000;padding:8px;text-align:center;font-size:14px} .box{display:flex;gap:10px;margin-top:15px} .box div{flex:1;border:1px solid #000;padding:12px;text-align:center} .foot{margin-top:20px;text-align:center;font-size:12px;color:#555}</style></head><body>
+let html = `<html><head><title>SRT - ${titleText}</title><style>body{font-family:Arial;padding:20px;color:#000} h1{text-align:center;margin:0} h2{text-align:center;margin:5px 0} table{width:100%;border-collapse:collapse;margin-top:15px} th,td{border:1px solid #000;padding:8px;text-align:center;font-size:14px} .box{display:flex;gap:10px;margin-top:15px} .box div{flex:1;border:1px solid #000;padding:12px;text-align:center} .foot{margin-top:20px;text-align:center;font-size:12px;color:#555} button{padding:12px;background:#000;color:#fff;border:none;border-radius:8px;margin:10px 5px}</style></head><body>
 <h1>🏆 SRT COMMODITIES</h1><h2>${titleText}</h2><p style="text-align:center">${subText} | Date: ${new Date().toLocaleDateString('en-IN')} | Total Entry: ${list.length}</p>
 <div class="box"><div><b>${isClient?'Profit / Loss':'Total P&L'}</b><br>₹${tp.toFixed(0)}</div><div><b>Brokerage</b><br>₹${tb.toFixed(0)}</div>${commBox}<div><b>${isClient?'Net Balance':'Net Total'}</b><br>₹${tn.toFixed(0)}</div></div>${note}
 <table>${thRow}${rows}</table>
+<p style="text-align:center"><button onclick="window.print()">🖨️ Print / PDF Save Karo</button> <button onclick="history.back()">⬅️ Wapas Jao</button></p>
 <p class="foot">SRT COMMODITIES - ${titleText}</p>
 </body></html>`;
 let w = window.open('','_blank');
-if(!w) return alert('Popup block ho gaya, Safari me Popup Allow karo');
+if(!w){ document.write(html); return; }
 w.document.write(html); w.document.close();
 setTimeout(()=>{ try{ w.print(); }catch(e){} }, 500);
 }
@@ -634,14 +759,14 @@ aList.forEach((a)=>{ setTimeout(()=>{ downloadAdminSinglePDF(a); }, delay); dela
 alert('Total '+(cList.length+vList.length+aList.length)+' alag-alag PDF khulengi.');
 }
 function resetEntries(){
-if(!trades.length) return alert('Abhi koi Entry hi nahi hai');
-if(!confirm('Sirf ENTRY delete karni hai? Admin, Client, Vendor aur Password BACHE rahenge. Pakka?')) return;
+if(!confirm('Sirf Entry Amount Reset karna hai?')) return;
 let c2=prompt('Confirm karne ke liye YES likho','');
 if(c2!=='YES') return alert('Reset cancel ho gaya');
-trades=[]; editId=null; localStorage.setItem('t1',JSON.stringify(trades)); save(); alert('Ho gaya! Sirf Entry delete hui.');
+doWeeklyReset(); save(); alert('Ho gaya! Sirf Entry Amount reset - Rate bacha hua hai.');
 }
-function clearAll(){if(confirm('Sab delete? Pakka?')){let p=getSavedPass(); localStorage.clear(); if(p) localStorage.setItem('srtPass',p); admins=[];clients=[];vendors=[];trades=[];brkSettings=[];commSettings=[];hideComm=false;selectedAdmin='All';selectedVendor='All';render();}}
+function clearAll(){if(confirm('Sab delete? Pakka? History bhi delete hogi.')){let p=getSavedPass(); localStorage.clear(); if(p) localStorage.setItem('srtPass',p); admins=[];clients=[];vendors=[];trades=[];brkSettings=[];commSettings=[];itemsList=["Copper","Crude Oil","Zinc","Natural Gas","Gold","Mgold","Silver","Msilver"];hideComm=false;selectedAdmin='All';selectedVendor='All';render();}}
 if(getSavedPass()){ } else { document.getElementById('lockScreen').style.display='flex'; }
+checkSundayReset();
 </script>
 </body>
 </html>
