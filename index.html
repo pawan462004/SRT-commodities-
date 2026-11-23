@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRT COMMODITIES</title>
+<style>
+*{box-sizing:border-box;font-family:Arial} body{margin:0;background:#0f172a;color:#fff;padding:12px}
+h2{text-align:center;color:#facc15} .card{background:#1e293b;padding:0;border-radius:14px;margin-bottom:12px;overflow:hidden}
+.cardHead{padding:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.cardHead:active{background:#334155} .cardHead h3{margin:0;font-size:16px} .arrow{font-size:20px}
+.cardBody{padding:0 14px 14px;display:none}
+.cardBody.open{display:block}
+input,select{width:100%;padding:13px;margin:6px 0;border-radius:9px;border:none;font-size:16px}
+button{width:100%;padding:14px;background:#facc15;color:#000;font-weight:bold;border:none;border-radius:10px;margin-top:8px;font-size:16px}
+.btn2{background:#22c55e;color:#fff} .btn3{background:#fff;color:#000} .btnBlue{background:#3b82f6;color:#fff} .btnHide{background:#a855f7;color:#fff} .btnReset{background:#f97316;color:#fff}
+table{width:100%;font-size:13px;border-collapse:collapse} td,th{border-bottom:1px solid #334155;padding:7px;text-align:center}
+.green{color:#22c55e} .red{color:#ef4444} .flex{display:flex;gap:8px} .flex div{flex:1;background:#0f172a;padding:12px;border-radius:10px;text-align:center}
+.small{width:auto;padding:6px 10px;font-size:12px;margin:2px} .edit{background:#facc15} .del{background:#ef4444;color:#fff} .pdfBtn{background:#3b82f6;color:#fff} .noEntryBtn{background:#475569;color:#cbd5e1}
+.toggle{display:flex;align-items:center;gap:10px;background:#0f172a;padding:10px;border-radius:10px;margin-top:8px} .toggle input{width:20px;height:20px}
+.chip{display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:8px 10px;border-radius:9px;margin:5px 0} .chip span{font-size:15px} .chipBtns{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.adminBox{background:#0f172a;padding:12px;border-radius:12px;margin:8px 0;border:1px solid #334155} .adminBox.active{border:2px solid #facc15}
+.vendorBox{background:#0f172a;padding:12px;border-radius:12px;margin:8px 0;border:1px solid #334155} .vendorBox.active{border:2px solid #c084fc}
+.idBadge{background:#facc15;color:#000;padding:2px 7px;border-radius:6px;font-size:12px;font-weight:bold}
+.commBadge{background:#c084fc;color:#fff;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:bold}
+.itemBadge{background:#22c55e;color:#fff;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:bold}
+.brkBadge{background:#f97316;color:#fff;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:bold}
+.clientCommBadge{background:#facc15;color:#000;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:bold}
+.itemRow{background:#0f172a;padding:10px;border-radius:12px;margin:8px 0;border:1px solid #334155} .itemRow h4{margin:0 0 5px;color:#facc15;font-size:14px}
+#lockScreen{position:fixed;top:0;left:0;width:100%;height:100%;background:#0f172a;z-index:9999;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px;text-align:center}
+#lockScreen input{max-width:320px;text-align:center;font-size:22px;letter-spacing:4px}
+#lockScreen button{max-width:320px}
+@media print{body{background:#fff;color:#000} .no-print{display:none} .card{background:#fff;color:#000;border:1px solid #000} .hide-comm{ display:none !important; } .cardBody{display:block !important} }
+.hide-comm{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div id="lockScreen">
+<h1 style="color:#facc15;margin:0">🏆 SRT COMMODITIES</h1>
+<p style="color:#cbd5e1">🔒 Private Hisab - Password Daalo</p>
+<div id="setPassDiv" style="width:100%;max-width:320px;display:none">
+<input id="newPass" type="password" placeholder="Naya Password">
+<input id="newPass2" type="password" placeholder="Dobara Password">
+<button onclick="setPassword()" style="background:#22c55e;color:#fff">🔒 Password Set Karo</button>
+</div>
+<div id="enterPassDiv" style="width:100%;max-width:320px;display:none">
+<input id="enterPass" type="password" placeholder="••••••" onkeydown="if(event.key=='Enter') unlockApp()">
+<button onclick="unlockApp()" style="background:#facc15">🔓 Kholo</button>
+<p id="wrongMsg" style="color:#ef4444;font-size:13px"></p>
+<button onclick="forgotPass()" style="background:transparent;color:#94a3b8;font-size:13px">Password Bhool Gaye? Yaha Click Karo</button>
+</div>
+</div>
+
+<div id="mainApp" style="display:none">
+<h2>🏆 SRT COMMODITIES</h2>
+<div style="display:flex;gap:8px" class="no-print"><button onclick="openAllCards()" style="background:#22c55e;color:#fff">🔽 Sab Kholo</button><button onclick="closeAllCards()" style="background:#94a3b8">🔼 Sab Band Karo</button></div>
+
+<div class="card no-print" id="sec-entry" style="border:2px solid #facc15">
+<div class="cardHead" onclick="toggleCard('entry')"><h3 id="entryTitle">📝 1. Entry</h3><span class="arrow" id="arrow-entry">▼</span></div>
+<div class="cardBody open" id="body-entry">
+<select id="admin"><option value="">Admin Select Karo</option></select>
+<select id="client" onchange="onClientChange();autoFillAll()"><option value="Self">Self</option></select>
+<select id="clientIdSelect"><option value="">Client ID Select Karo</option></select>
+<select id="vendor" onchange="autoFillAll()"><option value="">Vendor Select Karo</option></select>
+<div id="itemRows"></div>
+<button onclick="addItemRow()" style="background:#22c55e;color:#fff">➕ Item Add Karo</button>
+<p id="multiTotal" style="font-size:13px;color:#cbd5e1"></p>
+<button id="saveBtn" onclick="addTrade()">✅ Save Karo</button>
+<button id="cancelBtn" onclick="cancelEdit()" style="display:none;background:#94a3b8">Cancel Edit</button>
+</div></div>
+
+<div class="card no-print" id="sec-client">
+<div class="cardHead" onclick="toggleCard('client')"><h3>➕ 2. Client</h3><span class="arrow" id="arrow-client">▶️</span></div>
+<div class="cardBody" id="body-client">
+<input id="cName" placeholder="Client Ka Naam">
+<input id="cId" placeholder="Client ID - 101,102,103">
+<button onclick="addClient()">Client Add Karo</button>
+<div id="clientListDiv"></div>
+</div></div>
+
+<div class="card no-print" id="sec-vendor">
+<div class="cardHead" onclick="toggleCard('vendor')"><h3>🏢 3. Vendor</h3><span class="arrow" id="arrow-vendor">▶️</span></div>
+<div class="cardBody" id="body-vendor">
+<input id="vName" placeholder="Vendor Ka Naam">
+<button onclick="addVendor()" style="background:#c084fc">Vendor Add Karo</button>
+<div id="vendorListDiv"></div>
+</div></div>
+
+<div class="card no-print" id="sec-admin">
+<div class="cardHead" onclick="toggleCard('admin')"><h3>👑 4. Admin</h3><span class="arrow" id="arrow-admin">▶️</span></div>
+<div class="cardBody" id="body-admin">
+<input id="aName" placeholder="Admin Ka Naam">
+<button onclick="addAdmin()" style="background:#f97316;color:#fff">Admin Add Karo</button>
+<div id="adminListDiv"></div>
+</div></div>
+
+<div class="card no-print" id="sec-security" style="border:1px solid #22c55e">
+<div class="cardHead" onclick="toggleCard('security')"><h3>🔒 5. Security</h3><span class="arrow" id="arrow-security">▶️</span></div>
+<div class="cardBody" id="body-security">
+<div style="display:flex;gap:8px"><button onclick="changePassword()" style="background:#f97316;color:#fff">🔑 Password Badlo</button><button onclick="lockApp()" style="background:#ef4444;color:#fff">🔒 Lock Karo</button></div>
+</div></div>
+
+<div class="card no-print" id="sec-brkSetting" style="border:1px solid #f97316">
+<div class="cardHead" onclick="toggleCard('brk')"><h3>💰 6. Client Brokerage</h3><span class="arrow" id="arrow-brk">▶️</span></div>
+<div class="cardBody" id="body-brk">
+<select id="brkClient"><option value="">Client Select Karo</option></select>
+<select id="brkItem"><option value="">Item Select Karo</option><option>Copper</option><option>Crude Oil</option><option>Zinc</option><option>Natural Gas</option><option>Gold</option><option>Mgold</option><option>Silver</option><option>Msilver</option></select>
+<input id="brkAmt" type="number" placeholder="Brokerage Per Lot">
+<button onclick="saveBrkSetting()" style="background:#f97316;color:#fff">💰 Brokerage Fix Karo</button>
+<div id="brkList"></div>
+</div></div>
+
+<div class="card no-print" id="sec-commSetting" style="border:1px solid #c084fc">
+<div class="cardHead" onclick="toggleCard('comm')"><h3>💜 7. Vendor Commission - Default</h3><span class="arrow" id="arrow-comm">▶️</span></div>
+<div class="cardBody" id="body-comm">
+<select id="commVendor"><option value="">Vendor Select Karo</option></select>
+<select id="commItem"><option value="">Item Select Karo</option><option>Copper</option><option>Crude Oil</option><option>Zinc</option><option>Natural Gas</option><option>Gold</option><option>Mgold</option><option>Silver</option><option>Msilver</option></select>
+<input id="commAmt" type="number" placeholder="Commission Per Lot">
+<button onclick="saveCommSetting()" style="background:#c084fc">💜 Commission Fix Karo</button>
+<div id="commList"></div>
+</div></div>
+
+<div class="card no-print" id="sec-commClientSetting" style="border:2px solid #facc15">
+<div class="cardHead" onclick="toggleCard('cc')"><h3>⭐ 8. Vendor Commission - Har Client Se Alag</h3><span class="arrow" id="arrow-cc">▶️</span></div>
+<div class="cardBody" id="body-cc">
+<select id="ccVendor"><option value="">Vendor Select Karo</option></select>
+<select id="ccClient"><option value="">Client Select Karo</option></select>
+<select id="ccItem"><option value="">Item Select Karo</option><option>Copper</option><option>Crude Oil</option><option>Zinc</option><option>Natural Gas</option><option>Gold</option><option>Mgold</option><option>Silver</option><option>Msilver</option></select>
+<input id="ccAmt" type="number" placeholder="Is Client Se Commission Per Lot">
+<button onclick="saveClientCommSetting()" style="background:#facc15">⭐ Commission Fix Karo</button>
+<div id="ccList"></div>
+</div></div>
+
+<div class="card no-print" id="sec-filter">
+<div class="cardHead" onclick="toggleCard('filter')"><h3>👀 9. Filter</h3><span class="arrow" id="arrow-filter">▶️</span></div>
+<div class="cardBody" id="body-filter">
+<select id="filterAdmin" onchange="render()"><option value="All">Sabhi Admin</option></select>
+<select id="filterVendor" onchange="render()"><option value="All">Sabhi Vendor</option></select>
+<select id="filterClient" onchange="render()"><option value="All">Sabhi Client</option></select>
+<select id="filterId" onchange="render()"><option value="All">Sabhi ID</option></select>
+<select id="filterItem" onchange="render()"><option value="All">Sabhi Item</option><option>Copper</option><option>Crude Oil</option><option>Zinc</option><option>Natural Gas</option><option>Gold</option><option>Mgold</option><option>Silver</option><option>Msilver</option></select>
+<label class="toggle"><input type="checkbox" id="hideCommChk" onchange="toggleComm()"> <span id="hideLabel">👁️ Commission Hide Karo</span></label>
+<p id="hideNote" style="font-size:12px;color:#facc15;margin:5px 0 0"></p>
+</div></div>
+
+<div class="card" id="sec-itemHisab">
+<div class="cardHead" onclick="toggleCard('itemHisab')"><h3>📦 Item Wise Hisab</h3><span class="arrow" id="arrow-itemHisab">▶️</span></div>
+<div class="cardBody" id="body-itemHisab"><div id="itemHisab"></div></div></div>
+
+<div class="card" id="sec-adminHisab">
+<div class="cardHead" onclick="toggleCard('adminHisab')"><h3>👑 Admin Wise Hisab</h3><span class="arrow" id="arrow-adminHisab">▶️</span></div>
+<div class="cardBody" id="body-adminHisab"><div id="adminHisab"></div><div id="adminDetail" style="margin-top:10px"></div></div></div>
+
+<div class="card" id="sec-vendorHisab">
+<div class="cardHead" onclick="toggleCard('vendorHisab')"><h3>🏢 Vendor Wise Hisab</h3><span class="arrow" id="arrow-vendorHisab">▶️</span></div>
+<div class="cardBody" id="body-vendorHisab"><div id="vendorHisab"></div><div id="vendorDetail" style="margin-top:10px"></div></div></div>
+
+<div class="card" id="sec-total">
+<div class="cardHead" onclick="toggleCard('total')"><h3>💰 Total</h3><span class="arrow" id="arrow-total">▶️</span></div>
+<div class="cardBody" id="body-total">
+<div class="flex"><div><small>Total P&L</small><br><b id="totalPL" style="font-size:20px">₹0</b></div><div><small>Brokerage</small><br><b id="totalBrk" style="font-size:20px">₹0</b></div></div>
+<div class="flex" style="margin-top:8px"><div class="comm-col"><small>Commission</small><br><b id="totalComm" style="font-size:20px">₹0</b></div><div><small>Net Total <span id="netFormula" style="font-size:11px;color:#cbd5e1"></span></small><br><b id="netTotal" style="font-size:20px">₹0</b></div></div>
+</div></div>
+
+<div class="card" id="sec-report">
+<div class="cardHead" onclick="toggleCard('report')"><h3>📋 Report - <span id="reportTitle">Sabhi Client</span></h3><span class="arrow" id="arrow-report">▶️</span></div>
+<div class="cardBody" id="body-report">
+<p style="font-size:13px">Date: <span id="todayDate"></span> <span id="adminInTitle" style="font-size:13px;color:#facc15"></span> <span id="vendorInTitle" style="font-size:13px;color:#c084fc"></span> <span id="itemInTitle" style="font-size:13px;color:#22c55e"></span></p>
+<table><tr><th>Client ID</th><th>Admin</th><th>Client</th><th>Vendor</th><th>Item</th><th>Qty</th><th>P&L</th><th>Brk</th><th class="comm-col">Comm</th><th>Net</th><th class="no-print">Action</th></tr><tbody id="list"></tbody></table>
+</div></div>
+
+<div class="no-print" id="sec-pdf">
+<div class="cardHead" onclick="toggleCard('pdf')"><h3>📥 All PDF</h3><span class="arrow" id="arrow-pdf">▶️</span></div>
+<div class="cardBody" id="body-pdf">
+<button onclick="downloadAllSeparatePDF()" style="background:#111827;color:#fff;border:2px solid #facc15;font-size:17px">📥 ALL PDF - Sabki Alag-Alag PDF</button>
+<button class="btnBlue" onclick="downloadAllClientsPDF()">👤 All Clients Ki Alag-Alag PDF</button>
+<button onclick="downloadAllVendorsPDF()" style="background:#c084fc">🏢 All Vendors Ki Alag-Alag PDF</button>
+<button onclick="downloadAllAdminsPDF()" style="background:#f97316;color:#fff">👑 All Admins Ki Alag-Alag PDF</button>
+<button class="btnBlue" onclick="downloadClientPDF()">📥 <span id="pdfBtnText">PDF Download Karo</span></button>
+<button class="btnHide" onclick="toggleCommBtn()">👁️ Commission Hide / Show Karo</button>
+<button class="btnReset" onclick="resetEntries()">🔄 Entry Reset Karo</button>
+<button class="btn3" onclick="clearAll()">Sab Delete Karo</button>
+</div></div>
+
+<!-- BACKUP - DUSRE PHONE ME DATA LE JANE KE LIYE -->
+<div class="card no-print" style="border:2px solid #22c55e">
+<div class="cardHead" onclick="toggleCard('backup')"><h3>🔄 Backup - Dusre Phone Me Data</h3><span class="arrow" id="arrow-backup">▶️</span></div>
+<div class="cardBody" id="body-backup">
+<button onclick="exportData()" style="background:#22c55e;color:#fff">📤 Backup Export Karo - File Banegi</button>
+<button onclick="document.getElementById('importFile').click()" style="background:#3b82f6;color:#fff">📥 Backup Import Karo - Dusre Phone Ka Data Lao</button>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(this)">
+</div></div>
+</div>
+
+<script>
+let openCards = JSON.parse(localStorage.getItem('openCards')||'["entry"]');
+function toggleCard(id){
+let body=document.getElementById('body-'+id); let arrow=document.getElementById('arrow-'+id);
+if(!body) return;
+let isOpen = body.classList.contains('open');
+if(isOpen){ body.classList.remove('open'); if(arrow) arrow.innerText='▶️'; openCards=openCards.filter(x=>x!=id); }
+else { body.classList.add('open'); if(arrow) arrow.innerText='▼'; if(!openCards.includes(id)) openCards.push(id); }
+localStorage.setItem('openCards',JSON.stringify(openCards));
+}
+function applyCards(){
+document.querySelectorAll('.cardBody').forEach(b=>{
+let id=b.id.replace('body-','');
+let shouldOpen = openCards.includes(id);
+if(shouldOpen) b.classList.add('open'); else b.classList.remove('open');
+let arrow=document.getElementById('arrow-'+id); if(arrow) arrow.innerText = shouldOpen ? '▼' : '▶️';
+});
+}
+function openAllCards(){ openCards=['entry','client','vendor','admin','security','brk','comm','cc','filter','itemHisab','adminHisab','vendorHisab','total','report','pdf','backup']; localStorage.setItem('openCards',JSON.stringify(openCards)); applyCards(); }
+function closeAllCards(){ openCards=[]; localStorage.setItem('openCards',JSON.stringify(openCards)); applyCards(); }
+applyCards();
+function exportData(){
+let data={};
+['srtPass','ad1','c1','v1','t1','brkSet','commSet','hideComm','selAdmin','selVendor','openCards'].forEach(k=>{ data[k]=localStorage.getItem(k); });
+let blob=new Blob([JSON.stringify(data)],{type:'application/json'});
+let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='SRT-Backup-'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+alert('Backup ban gaya! Is file ko WhatsApp se dusre phone ko bhej do.');
+}
+function importData(input){
+let file=input.files[0]; if(!file) return;
+let reader=new FileReader();
+reader.onload=function(e){
+try{
+let data=JSON.parse(e.target.result);
+if(!data.t1 && !data.c1) return alert('Ye sahi Backup file nahi hai');
+if(!confirm('Is Backup se purana data replace ho jayega. Pakka?')) return;
+Object.keys(data).forEach(k=>{ if(data[k]!=null) localStorage.setItem(k,data[k]); });
+alert('Ho gaya! Sara data aa gaya. Ab App dobara khulega.');
+location.reload();
+}catch(err){ alert('File kharab hai, dobara Export karke bhejo'); }
+};
+reader.readAsText(file); input.value='';
+}
+function getSavedPass(){ return localStorage.getItem('srtPass') || ''; }
+function checkLock(){
+let p=getSavedPass();
+if(!p){ document.getElementById('setPassDiv').style.display='block'; document.getElementById('enterPassDiv').style.display='none'; }
+else { document.getElementById('setPassDiv').style.display='none'; document.getElementById('enterPassDiv').style.display='block'; }
+}
+function setPassword(){
+let a=document.getElementById('newPass').value.trim();
+let b=document.getElementById('newPass2').value.trim();
+if(a.length<4) return alert('Password kam se kam 4 digit ka rakho');
+if(a!==b) return alert('Dono password same nahi hai, dobara likho');
+localStorage.setItem('srtPass',a);
+alert('Password Set Ho Gaya! Ab yaad rakhna.');
+document.getElementById('lockScreen').style.display='none';
+document.getElementById('mainApp').style.display='block';
+render();
+}
+function unlockApp(){
+let p=document.getElementById('enterPass').value.trim();
+if(p===getSavedPass()){ document.getElementById('lockScreen').style.display='none'; document.getElementById('mainApp').style.display='block'; document.getElementById('enterPass').value=''; document.getElementById('wrongMsg').innerText=''; render(); }
+else { document.getElementById('wrongMsg').innerText='❌ Galat Password! Dobara try karo'; document.getElementById('enterPass').value=''; }
+}
+function lockApp(){ document.getElementById('lockScreen').style.display='flex'; document.getElementById('mainApp').style.display='none'; checkLock(); window.scrollTo(0,0); }
+function changePassword(){
+let oldP=prompt('Purana Password daalo','');
+if(oldP==null) return;
+if(oldP!==getSavedPass()) return alert('Purana Password galat hai');
+let np=prompt('Naya Password daalo (kam se kam 4 digit)','');
+if(!np || np.length<4) return alert('Password 4 digit se chota hai');
+localStorage.setItem('srtPass',np);
+alert('Password Badal Gaya!');
+}
+function forgotPass(){
+if(!confirm('Password bhool gaye? Agar Reset karoge to SAARA HISAB DELETE ho jayega aur naya password banana padega. Reset karna hai?')) return;
+let c=prompt('Reset karne ke liye YES likho','');
+if(c!=='YES') return alert('Reset cancel ho gaya');
+localStorage.clear(); location.reload();
+}
+checkLock();
+
+let admins=JSON.parse(localStorage.getItem('ad1')||'[]');
+let rawClients=JSON.parse(localStorage.getItem('c1')||'[]');
+let clients=rawClients.map(c=>{ if(typeof c=='string') return {name:c,ids:[]}; if(c.id && !c.ids) return {name:c.name,ids:[c.id]}; if(!c.ids) c.ids=[]; c.ids=sortIds(c.ids); return c; });
+let vendors=JSON.parse(localStorage.getItem('v1')||'[]');
+let trades=JSON.parse(localStorage.getItem('t1')||'[]');
+trades.forEach(t=>{ if(!t.item) t.item='-'; if(t.qty==null) t.qty=''; });
+let brkSettings=JSON.parse(localStorage.getItem('brkSet')||'[]');
+let commSettings=JSON.parse(localStorage.getItem('commSet')||'[]');
+let editId=null; let hideComm = localStorage.getItem('hideComm')=='1';
+let selectedAdmin = localStorage.getItem('selAdmin') || 'All';
+let selectedVendor = localStorage.getItem('selVendor') || 'All';
+function sortIds(arr){
+return [...arr].sort((a,b)=>{
+let na=parseFloat(a); let nb=parseFloat(b);
+if(!isNaN(na) && !isNaN(nb)) return na-nb;
+return String(a).localeCompare(String(b));
+});
+}
+function idNum(v){ let n=parseFloat(v||''); return isNaN(n)? 999999999 : n; }
+function clientFirstId(c){ let ids=sortIds(c.ids||[]); if(!ids.length) return 999999999; return idNum(ids[0]); }
+function sortClients(arr){ return [...arr].sort((a,b)=>{ let d=clientFirstId(a)-clientFirstId(b); if(d!==0) return d; return a.name.localeCompare(b.name); }); }
+document.getElementById('todayDate').innerText=new Date().toLocaleDateString('en-IN');
+document.getElementById('hideCommChk').checked=hideComm;
+function calcNet(t){ return hideComm ? (t.pnl - t.brk) : (t.pnl - t.brk - t.comm); }
+function calcClientNet(t){ return t.pnl - t.brk; }
+function clientLabel(c){ let ids=sortIds(c.ids||[]); return ids.length ? c.name+' (IDs: '+ids.join(', ')+')' : c.name; }
+function getClientByName(name){ return clients.find(x=>x.name==name); }
+function parseIds(str){ let arr=str.split(',').map(s=>s.trim()).filter(Boolean); let uniq=[...new Set(arr)]; return sortIds(uniq); }
+function hasClientEntry(name){ return trades.some(t=>t.c==name); }
+function hasAdminEntry(name){ return trades.some(t=>t.admin==name); }
+function hasVendorEntry(name){ return trades.some(t=>t.v==name); }
+function getBrkPerLot(clientName,item){ let f=brkSettings.find(x=>x.client==clientName && x.item==item); return f? f.amt : null; }
+function getCommPerLot(vendor,item,clientName){
+let exact=commSettings.find(x=>x.vendor==vendor && x.item==item && x.client==clientName && x.client);
+if(exact) return {amt:exact.amt, type:'client'};
+let def=commSettings.find(x=>x.vendor==vendor && x.item==item && (!x.client||x.client==''));
+if(def) return {amt:def.amt, type:'default'};
+return null;
+}
+function save(){localStorage.setItem('ad1',JSON.stringify(admins));localStorage.setItem('c1',JSON.stringify(clients));localStorage.setItem('v1',JSON.stringify(vendors));localStorage.setItem('t1',JSON.stringify(trades));localStorage.setItem('brkSet',JSON.stringify(brkSettings));localStorage.setItem('commSet',JSON.stringify(commSettings));localStorage.setItem('hideComm',hideComm?'1':'0');localStorage.setItem('selAdmin',selectedAdmin);localStorage.setItem('selVendor',selectedVendor);render();}
+function saveBrkSetting(){
+let cl=document.getElementById('brkClient').value; let it=document.getElementById('brkItem').value; let amt=parseFloat(document.getElementById('brkAmt').value||'');
+if(!cl) return alert('Client Select Karo'); if(!it) return alert('Item Select Karo'); if(isNaN(amt)) return alert('Brokerage Per Lot daalo');
+let ex=brkSettings.find(x=>x.client==cl && x.item==it);
+if(ex) ex.amt=amt; else brkSettings.push({client:cl,item:it,amt:amt});
+document.getElementById('brkAmt').value=''; save(); alert('Fix Ho Gaya! '+cl+' - '+it+' Brokerage ₹'+amt+' Per Lot');
+}
+function deleteBrkSetting(i){ if(!confirm('Ye Brokerage setting delete karni hai?')) return; brkSettings.splice(i,1); save(); }
+function setClientBrk(clientName){
+let existing = brkSettings.filter(s=>s.client==clientName);
+let msg = existing.length ? 'Is Client ki pehle se Fix Brokerage Per Lot:\n'+existing.map(s=>s.item+' = ₹'+s.amt+' / Lot').join('\n')+'\n\n' : 'Is Client ki koi Brokerage Fix nahi hai.\n\n';
+let item = prompt(msg+'Kis Item ki Brokerage Per Lot set karni hai? Naam likho -\nCopper, Crude Oil, Zinc, Natural Gas, Gold, Mgold, Silver, Msilver','Copper');
+if(item==null) return; item=item.trim(); if(!item) return;
+let old = getBrkPerLot(clientName,item);
+let amtStr = prompt(clientName+' - '+item+' ki Brokerage PER LOT kitni?'+(old!=null?(' (Pehle wali: ₹'+old+' / Lot)'):''), old!=null?old:'');
+if(amtStr==null) return; let amt=parseFloat(amtStr); if(isNaN(amt)) return alert('Sahi Brokerage daalo');
+let ex=brkSettings.find(x=>x.client==clientName && x.item==item);
+if(ex) ex.amt=amt; else brkSettings.push({client:clientName,item:item,amt:amt});
+save(); alert('Ho Gaya! ✅\n'+clientName+' - '+item+' Brokerage ₹'+amt+' Per Lot Fix ho gayi.');
+}
+function saveCommSetting(){
+let v=document.getElementById('commVendor').value; let it=document.getElementById('commItem').value; let amt=parseFloat(document.getElementById('commAmt').value||'');
+if(!v) return alert('Vendor Select Karo'); if(!it) return alert('Item Select Karo'); if(isNaN(amt)) return alert('Commission Per Lot daalo');
+let ex=commSettings.find(x=>x.vendor==v && x.item==it && (!x.client||x.client==''));
+if(ex) ex.amt=amt; else commSettings.push({vendor:v,item:it,client:'',amt:amt});
+document.getElementById('commAmt').value=''; save(); alert('Default Fix Ho Gaya! '+v+' - '+it+' Commission ₹'+amt+' Per Lot');
+}
+function saveClientCommSetting(){
+let v=document.getElementById('ccVendor').value; let cl=document.getElementById('ccClient').value; let it=document.getElementById('ccItem').value; let amt=parseFloat(document.getElementById('ccAmt').value||'');
+if(!v) return alert('Vendor Select Karo'); if(!cl) return alert('Client Select Karo - Jiska Alag Hai'); if(!it) return alert('Item Select Karo'); if(isNaN(amt)) return alert('Commission Per Lot daalo');
+let ex=commSettings.find(x=>x.vendor==v && x.item==it && x.client==cl);
+if(ex) ex.amt=amt; else commSettings.push({vendor:v,item:it,client:cl,amt:amt});
+document.getElementById('ccAmt').value=''; save(); alert('Ho Gaya! ⭐\n'+v+' - '+it+' - Client: '+cl+' - Commission ₹'+amt+' Per Lot Fix ho gaya.');
+}
+function deleteCommSetting(i){ if(!confirm('Ye Commission setting delete karni hai?')) return; commSettings.splice(i,1); save(); }
+function setVendorComm(vendorName){
+let existing = commSettings.filter(s=>s.vendor==vendorName);
+let msg = existing.length ? 'Is Vendor ka pehle se Fix Commission Per Lot:\n'+existing.map(s=>s.item+' '+(s.client?('Client: '+s.client):'(Default - Sab Client)')+' = ₹'+s.amt+' / Lot').join('\n')+'\n\n' : 'Is Vendor ka koi Commission Fix nahi hai.\n\n';
+let item = prompt(msg+'Kis Item ka Commission Per Lot set karna hai? Naam likho -\nCopper, Crude Oil, Zinc, Natural Gas, Gold, Mgold, Silver, Msilver','Copper');
+if(item==null) return; item=item.trim(); if(!item) return;
+let cl = prompt('Kis Client ke liye hai?\nKhali chhod do to DEFAULT - SAB Client ke liye lagega.\nEk Client ke liye alag hai to uska naam likho - jaise Rahul\n\nClients: '+clients.map(c=>c.name).join(', '),'');
+if(cl==null) return; cl=cl.trim();
+let old = null; if(!cl){ let d=commSettings.find(x=>x.vendor==vendorName && x.item==item && (!x.client||x.client=='')); old = d? d.amt : null; } else { let d=commSettings.find(x=>x.vendor==vendorName && x.item==item && x.client==cl); old = d? d.amt : null; }
+let amtStr = prompt(vendorName+' - '+item+' '+(cl?('Client: '+cl+' '):'(Default - Sab Client) ')+'ka Commission PER LOT kitna?'+(old!=null?(' (Pehle wala: ₹'+old+' / Lot)'):''), old!=null?old:'');
+if(amtStr==null) return; let amt=parseFloat(amtStr); if(isNaN(amt)) return alert('Sahi Commission daalo');
+let ex=commSettings.find(x=>x.vendor==vendorName && x.item==item && (x.client||'')==cl);
+if(ex) ex.amt=amt; else commSettings.push({vendor:vendorName,item:item,client:cl,amt:amt});
+save(); alert('Ho Gaya! ✅\n'+vendorName+' - '+item+' '+(cl?('Client: '+cl+' '):'(Default) ')+'Commission ₹'+amt+' Per Lot Fix ho gaya.');
+}
+function addAdmin(){let n=document.getElementById('aName').value.trim(); if(!n) return alert('Admin Naam daalo'); admins.push(n); save(); alert('Admin Add Ho Gaya'); document.getElementById('aName').value='';}
+function editAdmin(i){let old=admins[i]; let n=prompt('Admin ka naam edit karo',old); if(n==null) return; n=n.trim(); if(!n) return; let oldName=admins[i]; admins[i]=n; trades.forEach(t=>{ if(t.admin==oldName) t.admin=n; }); if(selectedAdmin==oldName) selectedAdmin=n; save(); alert('Admin Edit Ho Gaya');}
+function deleteAdmin(i){let name=admins[i]; if(!confirm(name+' ko delete karna hai?')) return; admins.splice(i,1); if(selectedAdmin==name) selectedAdmin='All'; save();}
+function addVendor(){let n=document.getElementById('vName').value.trim(); if(!n) return alert('Vendor Naam daalo'); vendors.push(n); save(); alert('Vendor Add Ho Gaya'); document.getElementById('vName').value='';}
+function editVendor(i){let old=vendors[i]; let n=prompt('Vendor ka naam edit karo',old); if(n==null) return; n=n.trim(); if(!n) return; let oldName=vendors[i]; vendors[i]=n; trades.forEach(t=>{ if(t.v==oldName) t.v=n; }); commSettings.forEach(s=>{ if(s.vendor==oldName) s.vendor=n; }); if(selectedVendor==oldName) selectedVendor=n; save(); alert('Vendor Edit Ho Gaya');}
+function deleteVendor(i){let name=vendors[i]; if(!confirm(name+' ko delete karna hai?')) return; vendors.splice(i,1); if(selectedVendor==name) selectedVendor='All'; save();}
+function addClient(){let n=document.getElementById('cName').value.trim(); let idStr=document.getElementById('cId').value.trim(); if(!n) return alert('Naam daalo'); let ids=parseIds(idStr); if(!ids.length){ let inp=prompt('Client ID daalo - Multiple ho to comma se likho - 101,102,103','')||''; ids=parseIds(inp); } clients.push({name:n,ids:ids}); save(); alert('Client Add Ho Gaya - '+n+' IDs Sequence me: '+ids.join(', ')); document.getElementById('cName').value=''; document.getElementById('cId').value='';}
+function editClient(i){let old=clients[i]; let n=prompt('Client ka naam edit karo',old.name); if(n==null) return; n=n.trim(); if(!n) return; let nidStr=prompt('Client IDs edit karo - Multiple ho to comma se - 101,102,103',(sortIds(old.ids||[])).join(',')); if(nidStr==null) return; let nids=parseIds(nidStr); let oldName=old.name; clients[i]={name:n,ids:nids}; trades.forEach(t=>{ if(t.c==oldName) t.c=n; }); brkSettings.forEach(s=>{ if(s.client==oldName) s.client=n; }); commSettings.forEach(s=>{ if(s.client==oldName) s.client=n; }); save(); alert('Client Edit Ho Gaya - IDs Sequence me: '+nids.join(', '));}
+function deleteClient(i){let name=clients[i].name; if(!confirm(name+' ko delete karna hai?')) return; clients.splice(i,1); save();}
+function toggleComm(){ hideComm=document.getElementById('hideCommChk').checked; save(); }
+function toggleCommBtn(){ hideComm=!hideComm; document.getElementById('hideCommChk').checked=hideComm; save(); }
+function selectAdmin(name){ selectedAdmin=name; document.getElementById('filterAdmin').value=name; save(); }
+function selectVendor(name){ selectedVendor=name; document.getElementById('filterVendor').value=name; save(); }
+function onClientChange(){ let c=document.getElementById('client').value; let sel=document.getElementById('clientIdSelect'); if(c=='Self'){ sel.innerHTML='<option value="">Client ID Select Karo</option>'; return; } let obj=getClientByName(c); if(!obj || !obj.ids.length){ sel.innerHTML='<option value="">Is Client ki koi ID nahi</option>'; return; } let sIds=sortIds(obj.ids); sel.innerHTML='<option value="">ID Select Karo - Sequence me</option>'+sIds.map(id=>`<option value="${id}">ID: ${id}</option>`).join(''); }
+function itemOptions(selVal){
+let opts=['Copper','Crude Oil','Zinc','Natural Gas','Gold','Mgold','Silver','Msilver'];
+return '<option value="">Item Select Karo</option>'+opts.map(o=>`<option ${o==selVal?'selected':''}>${o}</option>`).join('');
+}
+function autoFillRow(row){
+let c=document.getElementById('client').value; let v=document.getElementById('vendor').value;
+let item=row.querySelector('.it-item').value;
+if(!item) return;
+let qty=parseFloat(row.querySelector('.it-qty').value||0);
+let brkPer=getBrkPerLot(c,item);
+let commObj=getCommPerLot(v,item,c);
+if(brkPer!=null){ row.querySelector('.it-brk').value = qty>0 ? (brkPer*qty) : brkPer; }
+if(commObj!=null){ row.querySelector('.it-comm').value = qty>0 ? (commObj.amt*qty) : commObj.amt; }
+updateMultiTotal();
+}
+function onQtyChange(row){ autoFillRow(row); }
+function autoFillAll(){ document.querySelectorAll('#itemRows .itemRow').forEach(r=> autoFillRow(r)); }
+function addItemRow(prefill){
+let div=document.createElement('div');
+div.className='itemRow';
+div.innerHTML=`<h4>📦 Item <button class="small del" style="float:right" onclick="this.parentElement.parentElement.remove();updateMultiTotal()">✖️ Hatao</button></h4>
+<select class="it-item" onchange="autoFillRow(this.parentElement)">${itemOptions(prefill?prefill.item:'')}</select>
+<input class="it-qty" type="number" placeholder="Quantity / Lot Kitni?" value="${prefill?prefill.qty||'':''}" oninput="onQtyChange(this.parentElement)">
+<input class="it-pnl" type="number" placeholder="P&L Kitna?" value="${prefill?prefill.pnl:''}" oninput="updateMultiTotal()">
+<input class="it-brk" type="number" placeholder="Brokerage ₹" value="${prefill?prefill.brk:''}" oninput="updateMultiTotal()">
+<input class="it-comm" type="number" placeholder="Commission ₹" value="${prefill?prefill.comm:''}" oninput="updateMultiTotal()">`;
+document.getElementById('itemRows').appendChild(div);
+updateMultiTotal();
+}
+function resetItemRows(){ document.getElementById('itemRows').innerHTML=''; addItemRow(); }
+function updateMultiTotal(){
+let rows=document.querySelectorAll('#itemRows .itemRow');
+let tp=0,tb=0,tc=0; rows.forEach(r=>{ tp+=parseFloat(r.querySelector('.it-pnl').value||0); tb+=parseFloat(r.querySelector('.it-brk').value||0); tc+=parseFloat(r.querySelector('.it-comm').value||0); });
+let net = hideComm ? (tp-tb) : (tp-tb-tc);
+document.getElementById('multiTotal').innerText = rows.length ? `Total - ${rows.length} Items | P&L ₹${tp.toFixed(0)} | Brk ₹${tb.toFixed(0)} | Comm ₹${tc.toFixed(0)} | Net ₹${net.toFixed(0)}` : '';
+}
+resetItemRows();
+function addTrade(){
+let admin=document.getElementById('admin').value || '-';
+let c=document.getElementById('client').value;
+let v=document.getElementById('vendor').value || '-';
+let cid=document.getElementById('clientIdSelect').value || '';
+if(c!='Self'){ let obj=getClientByName(c); if(obj && obj.ids.length && !cid) return alert('Is Client ka ID Select Karo - '+sortIds(obj.ids).join(', ')); }
+if(editId){
+let row=document.querySelector('#itemRows .itemRow');
+if(!row) return alert('Item daalo');
+let item=row.querySelector('.it-item').value || '-';
+let qty=row.querySelector('.it-qty').value.trim();
+let pnl=parseFloat(row.querySelector('.it-pnl').value||0);
+let brk=parseFloat(row.querySelector('.it-brk').value||0);
+let comm=parseFloat(row.querySelector('.it-comm').value||0);
+if(!item || item=='-') return alert('Item Select Karo');
+let net=calcNet({pnl,brk,comm});
+let t=trades.find(x=>x.id==editId); t.admin=admin; t.c=c; t.clientId=cid; t.v=v; t.item=item; t.qty=qty; t.pnl=pnl; t.brk=brk; t.comm=comm; t.net=net;
+editId=null; document.getElementById('entryTitle').innerText='📝 1. Entry'; document.getElementById('saveBtn').innerText='✅ Save Karo'; document.getElementById('cancelBtn').style.display='none'; alert('Edit Ho Gaya! '+item+' Net ₹'+net.toFixed(0));
+resetItemRows(); save(); return;
+}
+let rows=[...document.querySelectorAll('#itemRows .itemRow')];
+if(!rows.length) return alert('Kam se kam 1 Item daalo');
+let toSave=[];
+for(let r of rows){
+let item=r.querySelector('.it-item').value || '';
+let qty=r.querySelector('.it-qty').value.trim();
+let pnl=parseFloat(r.querySelector('.it-pnl').value||0);
+let brk=parseFloat(r.querySelector('.it-brk').value||0);
+let comm=parseFloat(r.querySelector('.it-comm').value||0);
+if(!item) continue;
+let net=calcNet({pnl,brk,comm});
+toSave.push({id:Date.now()+Math.floor(Math.random()*100000),admin,c,clientId:cid,v,item,qty,pnl,brk,comm,net});
+}
+if(!toSave.length) return alert('Item Select Karo');
+toSave.forEach(t=> trades.push(t));
+let tp=toSave.reduce((s,t)=>s+t.pnl,0); let tn=toSave.reduce((s,t)=>s+t.net,0);
+alert('Save Ho Gaya! '+toSave.length+' Items - '+toSave.map(t=>t.item).join(', ')+' | Total P&L ₹'+tp.toFixed(0)+' | Net ₹'+tn.toFixed(0)+' | Client: '+c+' ID: '+(cid||'-'));
+resetItemRows(); save();
+}
+function editTrade(id){let t=trades.find(x=>x.id==id); if(!t) return; editId=id; if(!openCards.includes('entry')){ openCards.push('entry'); localStorage.setItem('openCards',JSON.stringify(openCards)); applyCards(); } document.getElementById('admin').value=t.admin=='-'?'':t.admin; document.getElementById('client').value=t.c; onClientChange(); setTimeout(()=>{ document.getElementById('clientIdSelect').value=t.clientId||''; },50); document.getElementById('vendor').value=t.v=='-'?'':t.v; document.getElementById('itemRows').innerHTML=''; addItemRow(t); document.getElementById('entryTitle').innerText='✏️ Edit - '+(t.item||'')+' '+t.c+' ID: '+(t.clientId||'-'); document.getElementById('saveBtn').innerText='Update Karo'; document.getElementById('cancelBtn').style.display='block'; window.scrollTo({top:0,behavior:'smooth'});}
+function cancelEdit(){editId=null; document.getElementById('entryTitle').innerText='📝 1. Entry'; document.getElementById('saveBtn').innerText='✅ Save Karo'; document.getElementById('cancelBtn').style.display='none'; resetItemRows();}
+function deleteTrade(id){if(!confirm('Ye entry delete karni hai?')) return; trades=trades.filter(x=>x.id!=id); save();}
+function getFiltered(){let f=document.getElementById('filterClient').value; let fa=document.getElementById('filterAdmin').value; let fv=document.getElementById('filterVendor').value; let fid=document.getElementById('filterId').value; let fi=document.getElementById('filterItem').value; let list=trades; if(f && f!='All') list=list.filter(t=>t.c==f); if(fa && fa!='All') list=list.filter(t=>t.admin==fa); if(fv && fv!='All') list=list.filter(t=>t.v==fv); if(fid && fid!='All') list=list.filter(t=>t.clientId==fid.replace('ID: ','')); if(fi && fi!='All') list=list.filter(t=>(t.item||'-')==fi); return list;}
+function renderItemHisab(){
+let items=['Copper','Crude Oil','Zinc','Natural Gas','Gold','Mgold','Silver','Msilver'];
+let html=items.map(it=>{
+let list=trades.filter(t=>t.item==it);
+let tp=0,tb=0,tc=0,tn=0,tq=0; list.forEach(t=>{tp+=t.pnl; tb+=t.brk; tc+=t.comm; tn+=calcNet(t); tq+=parseFloat(t.qty||0);});
+return `<div class="chip"><span><span class="itemBadge">📦 ${it}</span> <span style="font-size:12px;color:#94a3b8">${list.length} Entry | Qty: ${tq}</span></span><span style="font-size:13px"><span class="${tp>=0?'green':'red'}">P&L ₹${tp.toFixed(0)}</span> | Brk ₹${tb.toFixed(0)} <span class="comm-col ${hideComm?'hide-comm':''}">| Comm ₹${tc.toFixed(0)}</span> | <b class="${tn>=0?'green':'red'}">Net ₹${tn.toFixed(0)}</b></span></div>`;
+}).join('');
+document.getElementById('itemHisab').innerHTML=html;
+}
+function renderAdminHisab(){
+let allNames=[...admins]; trades.forEach(t=>{ if(t.admin && t.admin!='-' && !allNames.includes(t.admin)) allNames.push(t.admin); });
+if(!allNames.length){ document.getElementById('adminHisab').innerHTML='<p style="font-size:13px;color:#94a3b8">Abhi koi Admin nahi</p>'; document.getElementById('adminDetail').innerHTML=''; return; }
+let html=allNames.map(name=>{
+let list=trades.filter(t=>t.admin==name);
+let tp=0,tb=0,tc=0,tn=0; list.forEach(t=>{tp+=t.pnl; tb+=t.brk; tc+=t.comm; tn+=calcNet(t);});
+let isSel = selectedAdmin==name;
+return `<div class="adminBox ${isSel?'active':''}" onclick="selectAdmin('${name}')">
+<div style="display:flex;justify-content:space-between"><b>👑 ${name}</b><span style="font-size:12px;color:#facc15">${list.length} Entry</span></div>
+<div class="flex" style="margin-top:8px"><div><small>P&L</small><br><b class="${tp>=0?'green':'red'}">₹${tp.toFixed(0)}</b></div><div><small>Brk</small><br><b>₹${tb.toFixed(0)}</b></div><div class="comm-col ${hideComm?'hide-comm':''}"><small>Comm</small><br><b>₹${tc.toFixed(0)}</b></div><div><small>Net</small><br><b class="${tn>=0?'green':'red'}">₹${tn.toFixed(0)}</b></div></div></div>`;
+}).join('');
+document.getElementById('adminHisab').innerHTML=html;
+if(selectedAdmin=='All' || !allNames.includes(selectedAdmin)){ document.getElementById('adminDetail').innerHTML='<p style="font-size:13px;color:#94a3b8">Upar kisi Admin pe click karo</p>'; return; }
+let list=trades.filter(t=>t.admin==selectedAdmin);
+let vMap={}; let cMap={};
+list.forEach(t=>{
+if(!vMap[t.v]) vMap[t.v]={pnl:0,brk:0,comm:0,net:0,count:0};
+vMap[t.v].pnl+=t.pnl; vMap[t.v].brk+=t.brk; vMap[t.v].comm+=t.comm; vMap[t.v].net+=calcNet(t); vMap[t.v].count++;
+let ck=t.c+'|'+(t.clientId||'');
+if(!cMap[ck]) cMap[ck]={c:t.c,cid:t.clientId||'',pnl:0,brk:0,comm:0,net:0,count:0};
+cMap[ck].pnl+=t.pnl; cMap[ck].brk+=t.brk; cMap[ck].comm+=t.comm; cMap[ck].net+=calcNet(t); cMap[ck].count++;
+});
+let vHtml=Object.keys(vMap).map(v=>`<tr><td>🏢 ${v}</td><td>${vMap[v].count}</td><td class="${vMap[v].pnl>=0?'green':'red'}">₹${vMap[v].pnl.toFixed(0)}</td><td>₹${vMap[v].brk.toFixed(0)}</td><td class="comm-col ${hideComm?'hide-comm':''}">₹${vMap[v].comm.toFixed(0)}</td><td class="${vMap[v].net>=0?'green':'red'}">₹${vMap[v].net.toFixed(0)}</td></tr>`).join('');
+let cHtml=Object.keys(cMap).sort((a,b)=> idNum(cMap[a].cid)-idNum(cMap[b].cid)).map(k=>{let o=cMap[k]; return `<tr><td><span class="idBadge">ID: ${o.cid||'-'}</span> 👤 ${o.c}</td><td>${o.count}</td><td class="${o.pnl>=0?'green':'red'}">₹${o.pnl.toFixed(0)}</td><td>₹${o.brk.toFixed(0)}</td><td class="comm-col ${hideComm?'hide-comm':''}">₹${o.comm.toFixed(0)}</td><td class="${o.net>=0?'green':'red'}">₹${o.net.toFixed(0)}</td></tr>`}).join('');
+let adminPdfBtn = hasAdminEntry(selectedAdmin) ? `<button onclick="downloadAdminSinglePDF('${selectedAdmin.replace(/'/g,"\\'")}')" style="background:#3b82f6;color:#fff">📥 ${selectedAdmin} Ki PDF Download Karo</button>` : `<p style="color:#facc15;font-size:13px">⚠️ ${selectedAdmin} ki koi Entry nahi hai</p>`;
+document.getElementById('adminDetail').innerHTML=`<div style="background:#1e293b;padding:12px;border-radius:12px"><h3 style="margin:0">👑 ${selectedAdmin} Ka Detail <button class="small" onclick="selectAdmin('All')" style="background:#94a3b8">✖️ Band Karo</button></h3>
+<h4>🏢 Is Admin Ke Vendor</h4><table><tr><th>Vendor</th><th>Entry</th><th>P&L</th><th>Brk</th><th class="comm-col ${hideComm?'hide-comm':''}">Comm</th><th>Net</th></tr>${vHtml||'<tr><td colspan=6>Koi Vendor nahi</td></tr>'}</table>
+<h4 style="margin-top:12px">👤 Is Admin Ke Client</h4><table><tr><th>Client</th><th>Entry</th><th>P&L</th><th>Brk</th><th class="comm-col ${hideComm?'hide-comm':''}">Comm</th><th>Net</th></tr>${cHtml||'<tr><td colspan=6>Koi Client nahi</td></tr>'}</table>${adminPdfBtn}</div>`;
+}
+function renderVendorHisab(){
+let allNames=[...vendors]; trades.forEach(t=>{ if(t.v && t.v!='-' && !allNames.includes(t.v)) allNames.push(t.v); });
+if(!allNames.length){ document.getElementById('vendorHisab').innerHTML='<p style="font-size:13px;color:#94a3b8">Abhi koi Vendor nahi</p>'; document.getElementById('vendorDetail').innerHTML=''; return; }
+let totalCommAll=0; trades.forEach(t=> totalCommAll+=t.comm);
+let html=allNames.map(name=>{
+let list=trades.filter(t=>t.v==name);
+let tp=0,tb=0,tc=0,tn=0; list.forEach(t=>{tp+=t.pnl; tb+=t.brk; tc+=t.comm; tn+=calcNet(t);});
+let isSel = selectedVendor==name;
+return `<div class="vendorBox ${isSel?'active':''}" onclick="selectVendor('${name}')">
+<div style="display:flex;justify-content:space-between"><b>🏢 ${name}</b><span style="font-size:12px;color:#c084fc">${list.length} Entry</span></div>
+<div style="margin-top:6px"><span class="commBadge ${hideComm?'hide-comm':''}">💰 Commission: ₹${tc.toFixed(0)}</span></div>
+<div class="flex" style="margin-top:8px"><div><small>P&L</small><br><b class="${tp>=0?'green':'red'}">₹${tp.toFixed(0)}</b></div><div><small>Brk</small><br><b>₹${tb.toFixed(0)}</b></div><div class="comm-col ${hideComm?'hide-comm':''}"><small>Comm</small><br><b>₹${tc.toFixed(0)}</b></div><div><small>Net</small><br><b class="${tn>=0?'green':'red'}">₹${tn.toFixed(0)}</b></div></div></div>`;
+}).join('');
+document.getElementById('vendorHisab').innerHTML=`<p style="font-size:13px" class="${hideComm?'hide-comm':''}">Total Commission Sab Vendor Ka: <b style="color:#c084fc">₹${totalCommAll.toFixed(0)}</b></p>`+html;
+if(selectedVendor=='All' || !allNames.includes(selectedVendor)){ document.getElementById('vendorDetail').innerHTML='<p style="font-size:13px;color:#94a3b8">Upar kisi Vendor pe click karo</p>'; return; }
+let list=trades.filter(t=>t.v==selectedVendor);
+let aMap={}; let cMap={};
+list.forEach(t=>{
+if(!aMap[t.admin]) aMap[t.admin]={pnl:0,brk:0,comm:0,net:0,count:0};
+aMap[t.admin].pnl+=t.pnl; aMap[t.admin].brk+=t.brk; aMap[t.admin].comm+=t.comm; aMap[t.admin].net+=calcNet(t); aMap[t.admin].count++;
+let ck=t.c+'|'+(t.clientId||'');
+if(!cMap[ck]) cMap[ck]={c:t.c,cid:t.clientId||'',pnl:0,brk:0,comm:0,net:0,count:0};
+cMap[ck].pnl+=t.pnl; cMap[ck].brk+=t.brk; cMap[ck].comm+=t.comm; cMap[ck].net+=calcNet(t); cMap[ck].count++;
+});
+let aHtml=Object.keys(aMap).map(a=>`<tr><td>👑 ${a}</td><td>${aMap[a].count}</td><td class="${aMap[a].pnl>=0?'green':'red'}">₹${aMap[a].pnl.toFixed(0)}</td><td>₹${aMap[a].brk.toFixed(0)}</td><td class="comm-col ${hideComm?'hide-comm':''}"><span class="commBadge">₹${aMap[a].comm.toFixed(0)}</span></td><td class="${aMap[a].net>=0?'green':'red'}">₹${aMap[a].net.toFixed(0)}</td></tr>`).join('');
+let cHtml=Object.keys(cMap).sort((a,b)=> idNum(cMap[a].cid)-idNum(cMap[b].cid)).map(k=>{let o=cMap[k]; return `<tr><td><span class="idBadge">ID: ${o.cid||'-'}</span> 👤 ${o.c}</td><td>${o.count}</td><td class="${o.pnl>=0?'green':'red'}">₹${o.pnl.toFixed(0)}</td><td>₹${o.brk.toFixed(0)}</td><td class="comm-col ${hideComm?'hide-comm':''}"><span class="commBadge">₹${o.comm.toFixed(0)}</span></td><td class="${o.net>=0?'green':'red'}">₹${o.net.toFixed(0)}</td></tr>`}).join('');
+let vendorPdfBtn = hasVendorEntry(selectedVendor) ? `<button onclick="downloadVendorSinglePDF('${selectedVendor.replace(/'/g,"\\'")}')" style="background:#c084fc;color:#fff">📥 ${selectedVendor} Ki PDF Download Karo</button>` : `<p style="color:#c084fc;font-size:13px">⚠️ ${selectedVendor} ki koi Entry nahi hai</p>`;
+document.getElementById('vendorDetail').innerHTML=`<div style="background:#1e293b;padding:12px;border-radius:12px"><h3 style="margin:0">🏢 ${selectedVendor} Ka Detail <button class="small" onclick="selectVendor('All')" style="background:#94a3b8">✖️ Band Karo</button></h3>
+<h4>👑 Is Vendor Ke Admin</h4><table><tr><th>Admin</th><th>Entry</th><th>P&L</th><th>Brk</th><th class="comm-col ${hideComm?'hide-comm':''}">Comm</th><th>Net</th></tr>${aHtml||'<tr><td colspan=6>Koi Admin nahi</td></tr>'}</table>
+<h4 style="margin-top:12px">👤 Is Vendor Ke Client</h4><table><tr><th>Client</th><th>Entry</th><th>P&L</th><th>Brk</th><th class="comm-col ${hideComm?'hide-comm':''}">Comm</th><th>Net</th></tr>${cHtml||'<tr><td colspan=6>Koi Client nahi</td></tr>'}</table>${vendorPdfBtn}</div>`;
+}
+function render(){
+let sortedClientsForDropdown = sortClients(clients);
+let asel=document.getElementById('admin'); let curA_sel=asel.value; asel.innerHTML='<option value="">Admin Select Karo</option>'+admins.map(x=>'<option>'+x+'</option>').join(''); if(curA_sel) asel.value=curA_sel;
+let sel=document.getElementById('client'); let curC=sel.value; sel.innerHTML='<option value="Self">Self</option>'+sortedClientsForDropdown.map(x=>'<option value="'+x.name+'">'+clientLabel(x)+'</option>').join(''); if(curC) sel.value=curC;
+let vsel=document.getElementById('vendor'); let curV=vsel.value; vsel.innerHTML='<option value="">Vendor Select Karo</option>'+vendors.map(x=>'<option>'+x+'</option>').join(''); if(curV) vsel.value=curV;
+if(!editId) onClientChange();
+let showClients = sortClients(clients);
+document.getElementById('adminListDiv').innerHTML = admins.length? admins.map((a,i)=>{ let cnt=trades.filter(t=>t.admin==a).length; let pdfBtn = cnt>0 ? `<button class="small pdfBtn" onclick="downloadAdminSinglePDF('${a.replace(/'/g,"\\'")}')">📥 PDF (${cnt})</button>` : `<button class="small noEntryBtn" onclick="alert('${a.replace(/'/g,"\\'")} ki 0 Entry hai')">No Entry</button>`; return `<div class="chip"><span>👑 ${a} <span style="font-size:12px;color:#94a3b8">${cnt} Entry</span></span><div class="chipBtns">${pdfBtn}<button class="small edit" onclick="editAdmin(${i})">✏️</button><button class="small del" onclick="deleteAdmin(${i})">🗑️</button></div></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Admin Nahi</p>';
+document.getElementById('vendorListDiv').innerHTML = vendors.length? vendors.map((v,i)=>{ let tc=trades.filter(t=>t.v==v).reduce((s,t)=>s+t.comm,0); let cnt=trades.filter(t=>t.v==v).length; let myComm=commSettings.filter(s=>s.vendor==v); let commTxt=myComm.length? `<div style="font-size:11px;color:#c084fc;margin-top:3px">💜 Comm: ${myComm.map(s=>s.item+' '+(s.client?('⭐ '+s.client):'(Default)')+' ₹'+s.amt+' / Lot').join(' | ')}</div>` : ''; let pdfBtn = cnt>0 ? `<button class="small pdfBtn" onclick="downloadVendorSinglePDF('${v.replace(/'/g,"\\'")}')">📥 PDF (${cnt})</button>` : `<button class="small noEntryBtn" onclick="alert('${v.replace(/'/g,"\\'")} ki 0 Entry hai')">No Entry</button>`; return `<div class="chip"><span>🏢 ${v} <span class="commBadge ${hideComm?'hide-comm':''}">Comm: ₹${tc.toFixed(0)}</span> <span style="font-size:12px;color:#94a3b8">${cnt} Entry</span>${commTxt}</span><div class="chipBtns">${pdfBtn}<button class="small" style="background:#c084fc;color:#fff" onclick="setVendorComm('${v.replace(/'/g,"\\'")}')">💜 Comm Set</button><button class="small edit" onclick="editVendor(${i})">✏️</button><button class="small del" onclick="deleteVendor(${i})">🗑️</button></div></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Vendor Nahi</p>';
+document.getElementById('clientListDiv').innerHTML = showClients.length? showClients.map((c)=>{ let realIdx=clients.indexOf(c); let cnt=trades.filter(t=>t.c==c.name).length; let myBrk=brkSettings.filter(s=>s.client==c.name); let brkTxt=myBrk.length? `<div style="font-size:11px;color:#f97316;margin-top:3px">💰 Brk: ${myBrk.map(s=>s.item+' ₹'+s.amt+' / Lot').join(' | ')}</div>` : ''; let pdfBtn = cnt>0 ? `<button class="small pdfBtn" onclick="downloadClientSinglePDF('${c.name.replace(/'/g,"\\'")}')">📥 PDF (${cnt})</button>` : `<button class="small noEntryBtn" onclick="alert('${c.name.replace(/'/g,"\\'")} ki 0 Entry hai')">No Entry</button>`; return `<div class="chip"><span>${sortIds(c.ids||[]).map(id=>`<span class="idBadge">ID: ${id}</span>`).join(' ')} 👤 ${c.name} <span style="font-size:12px;color:#94a3b8">${cnt} Entry</span>${brkTxt}</span><div class="chipBtns">${pdfBtn}<button class="small" style="background:#f97316;color:#fff" onclick="setClientBrk('${c.name.replace(/'/g,"\\'")}')">💰 Brk Set</button><button class="small edit" onclick="editClient(${realIdx})">✏️</button><button class="small del" onclick="deleteClient(${realIdx})">🗑️</button></div></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Koi Client Nahi</p>';
+let brkCl=document.getElementById('brkClient'); let curBrkCl=brkCl.value; brkCl.innerHTML='<option value="">Client Select Karo</option>'+sortClients(clients).map(x=>'<option value="'+x.name+'">'+clientLabel(x)+'</option>').join(''); if(curBrkCl) brkCl.value=curBrkCl;
+let commV=document.getElementById('commVendor'); let curCommV=commV.value; commV.innerHTML='<option value="">Vendor Select Karo</option>'+vendors.map(x=>'<option>'+x+'</option>').join(''); if(curCommV) commV.value=curCommV;
+let ccV=document.getElementById('ccVendor'); let curCcV=ccV.value; ccV.innerHTML='<option value="">Vendor Select Karo</option>'+vendors.map(x=>'<option>'+x+'</option>').join(''); if(curCcV) ccV.value=curCcV;
+let ccCl=document.getElementById('ccClient'); let curCcCl=ccCl.value; ccCl.innerHTML='<option value="">Client Select Karo</option>'+sortClients(clients).map(x=>'<option value="'+x.name+'">'+clientLabel(x)+'</option>').join(''); if(curCcCl) ccCl.value=curCcCl;
+document.getElementById('brkList').innerHTML = brkSettings.length? brkSettings.map((s,i)=>`<div class="chip"><span><span class="brkBadge">💰 ${s.client} - ${s.item} - Brk ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteBrkSetting(${i})">🗑️</button></div>`).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Brokerage Fix nahi hai</p>';
+let defComms=commSettings.filter(s=>!s.client||s.client=='');
+document.getElementById('commList').innerHTML = defComms.length? defComms.map((s)=>{ let idx=commSettings.indexOf(s); return `<div class="chip"><span><span class="commBadge">💜 ${s.vendor} - ${s.item} - Default - Comm ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteCommSetting(${idx})">🗑️</button></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Default Commission Fix nahi hai</p>';
+let clientComms=commSettings.filter(s=>s.client && s.client!='');
+document.getElementById('ccList').innerHTML = clientComms.length? clientComms.map((s)=>{ let idx=commSettings.indexOf(s); return `<div class="chip"><span><span class="clientCommBadge">⭐ ${s.vendor} - ${s.item} - Client: ${s.client} - Comm ₹${s.amt} / Lot</span></span><button class="small del" onclick="deleteCommSetting(${idx})">🗑️</button></div>`}).join('') : '<p style="font-size:12px;color:#94a3b8">Abhi koi Client Wise Commission Fix nahi hai</p>';
+let fsel=document.getElementById('filterClient'); let cur=fsel.value; fsel.innerHTML='<option value="All">Sabhi Client</option><option value="Self">Self</option>'+sortClients(clients).map(x=>'<option value="'+x.name+'">'+clientLabel(x)+'</option>').join(''); if(cur) fsel.value=cur;
+let fasel=document.getElementById('filterAdmin'); fasel.value=selectedAdmin; fasel.innerHTML='<option value="All">Sabhi Admin</option>'+admins.map(x=>'<option>'+x+'</option>').join(''); fasel.value=selectedAdmin; selectedAdmin=fasel.value;
+let fVsel=document.getElementById('filterVendor'); fVsel.value=selectedVendor; fVsel.innerHTML='<option value="All">Sabhi Vendor</option>'+vendors.map(x=>'<option>'+x+'</option>').join(''); fVsel.value=selectedVendor; selectedVendor=fVsel.value;
+let allIds=[]; clients.forEach(c=> (c.ids||[]).forEach(id=>{ if(!allIds.includes(id)) allIds.push(id); })); trades.forEach(t=>{ if(t.clientId && !allIds.includes(t.clientId)) allIds.push(t.clientId); }); allIds=sortIds(allIds);
+let fIdSel=document.getElementById('filterId'); let curId=fIdSel.value; fIdSel.innerHTML='<option value="All">Sabhi ID</option>'+allIds.map(id=>`<option>ID: ${id}</option>`).join(''); if(curId) fIdSel.value=curId;
+let list=getFiltered(); let tp=0,tb=0,tc=0,tn=0; list.forEach(t=>{tp+=t.pnl; tb+=t.brk; tc+=t.comm; tn+=calcNet(t);});
+document.getElementById('totalPL').innerText='₹'+tp.toFixed(0); document.getElementById('totalBrk').innerText='₹'+tb.toFixed(0); document.getElementById('totalComm').innerText='₹'+tc.toFixed(0); document.getElementById('netTotal').innerText='₹'+tn.toFixed(0); document.getElementById('netTotal').style.color=tn>=0?'#22c55e':'#ef4444';
+document.getElementById('netFormula').innerText = hideComm ? '(P&L - Brokerage)' : '(P&L - Brk - Comm)';
+document.getElementById('hideNote').innerText = hideComm ? '✅ Hide ON' : 'Commission dikh raha hai';
+let title = (!cur || cur=='All') ? 'Sabhi Client' : cur; document.getElementById('reportTitle').innerText=title;
+document.getElementById('adminInTitle').innerText = (!selectedAdmin || selectedAdmin=='All') ? '' : ' | Admin: '+selectedAdmin;
+document.getElementById('vendorInTitle').innerText = (!selectedVendor || selectedVendor=='All') ? '' : ' | Vendor: '+selectedVendor;
+let fiVal=document.getElementById('filterItem').value; document.getElementById('itemInTitle').innerText = (!fiVal || fiVal=='All') ? '' : ' | Item: '+fiVal;
+document.getElementById('pdfBtnText').innerText = 'PDF Download Karo';
+document.getElementById('hideLabel').innerText = hideComm ? '🙈 Commission HIDE Hai' : '👁️ Commission Hide Karo';
+document.querySelectorAll('.comm-col').forEach(el=>{ if(hideComm) el.classList.add('hide-comm'); else el.classList.remove('hide-comm'); });
+renderItemHisab(); renderAdminHisab(); renderVendorHisab();
+let sortedList = [...list].sort((a,b)=> idNum(a.clientId)-idNum(b.clientId));
+document.getElementById('list').innerHTML=sortedList.map(t=>{let n=calcNet(t); return `<tr><td><span class="idBadge">ID: ${t.clientId||'-'}</span></td><td>${t.admin||'-'}</td><td>${t.c}</td><td>${t.v||'-'}</td><td><span class="itemBadge">${t.item||'-'}</span></td><td>${t.qty||'-'}</td><td class="${t.pnl>=0?'green':'red'}">₹${t.pnl.toFixed(0)}</td><td>₹${t.brk.toFixed(0)}</td><td class="comm-col ${hideComm?'hide-comm':''}">₹${t.comm.toFixed(0)}</td><td class="${n>=0?'green':'red'}">₹${n.toFixed(0)}</td><td class="no-print"><button class="small edit" onclick="editTrade(${t.id})">✏️ Edit</button><button class="small del" onclick="deleteTrade(${t.id})">🗑️</button></td></tr>`}).join('') || '<tr><td colspan=11>Abhi koi entry nahi</td></tr>';
+applyCards();
+}
+function downloadClientPDF(){ window.print(); }
+function buildSinglePDF(titleText, subText, list, isClient){
+let tp=0,tb=0,tc=0,tn=0; list.forEach(t=>{tp+=t.pnl; tb+=t.brk; tc+=t.comm; tn+= isClient ? calcClientNet(t) : calcNet(t);});
+let commTh = hideComm || isClient ? '' : '<th>Comm</th>';
+let commBox = (hideComm || isClient) ? '' : `<div><b>Commission</b><br>₹${tc.toFixed(0)}</div>`;
+let sorted = [...list].sort((a,b)=> idNum(a.clientId)-idNum(b.clientId));
+let rows = sorted.map(t=>{let n= isClient ? calcClientNet(t) : calcNet(t); let commTd = (hideComm||isClient) ? '' : `<td>₹${t.comm.toFixed(0)}</td>`; if(isClient) return `<tr><td><span style="background:#22c55e;color:#fff;padding:2px 6px;border-radius:5px">${t.item||'-'}</span></td><td>${t.qty||'-'}</td><td style="color:${t.pnl>=0?'green':'red'}">₹${t.pnl.toFixed(0)}</td><td>₹${t.brk.toFixed(0)}</td><td style="color:${n>=0?'green':'red'}">₹${n.toFixed(0)}</td></tr>`; return `<tr><td>${t.clientId||'-'}</td><td>${t.admin||'-'}</td><td>${t.c}</td><td>${t.v||'-'}</td><td>${t.item||'-'}</td><td>${t.qty||'-'}</td><td style="color:${t.pnl>=0?'green':'red'}">₹${t.pnl.toFixed(0)}</td><td>₹${t.brk.toFixed(0)}</td>${commTd}<td style="color:${n>=0?'green':'red'}">₹${n.toFixed(0)}</td></tr>`}).join('');
+let note = isClient ? '<p style="text-align:center;font-size:12px;color:#666">Net Balance = Profit / Loss - Brokerage</p>' : (hideComm ? '<p style="text-align:center;font-size:12px;color:#666">Commission Hidden - Net = P&L - Brokerage</p>' : '<p style="text-align:center;font-size:12px;color:#666">Net = P&L - Brokerage - Commission</p>');
+let thRow = isClient ? '<tr><th>Item</th><th>Qty</th><th>Profit / Loss</th><th>Brokerage</th><th>Net Balance</th></tr>' : `<tr><th>Client ID</th><th>Admin</th><th>Client</th><th>Vendor</th><th>Item</th><th>Qty</th><th>P&L</th><th>Brk</th>${commTh}<th>Net</th></tr>`;
+let html = `<html><head><title>SRT - ${titleText}</title><style>body{font-family:Arial;padding:20px;color:#000} h1{text-align:center;margin:0} h2{text-align:center;margin:5px 0} table{width:100%;border-collapse:collapse;margin-top:15px} th,td{border:1px solid #000;padding:8px;text-align:center;font-size:14px} .box{display:flex;gap:10px;margin-top:15px} .box div{flex:1;border:1px solid #000;padding:12px;text-align:center} .foot{margin-top:20px;text-align:center;font-size:12px;color:#555}</style></head><body>
+<h1>🏆 SRT COMMODITIES</h1><h2>${titleText}</h2><p style="text-align:center">${subText} | Date: ${new Date().toLocaleDateString('en-IN')} | Total Entry: ${list.length}</p>
+<div class="box"><div><b>${isClient?'Profit / Loss':'Total P&L'}</b><br>₹${tp.toFixed(0)}</div><div><b>Brokerage</b><br>₹${tb.toFixed(0)}</div>${commBox}<div><b>${isClient?'Net Balance':'Net Total'}</b><br>₹${tn.toFixed(0)}</div></div>${note}
+<table>${thRow}${rows}</table>
+<p class="foot">SRT COMMODITIES - ${titleText}</p>
+</body></html>`;
+let w = window.open('','_blank');
+if(!w) return alert('Popup block ho gaya, Safari me Popup Allow karo');
+w.document.write(html); w.document.close();
+setTimeout(()=>{ try{ w.print(); }catch(e){} }, 500);
+}
+function downloadClientSinglePDF(name){
+let list = trades.filter(t=>t.c==name);
+if(!list.length) return alert(name+' ki 0 Entry hai');
+buildSinglePDF('Client Report - '+name, 'Client: '+name, list, true);
+}
+function downloadAdminSinglePDF(name){
+let list = trades.filter(t=>t.admin==name);
+if(!list.length) return alert(name+' ki 0 Entry hai');
+buildSinglePDF('Admin Report - '+name, 'Admin: '+name, list, false);
+}
+function downloadVendorSinglePDF(name){
+let list = trades.filter(t=>t.v==name);
+if(!list.length) return alert(name+' ki 0 Entry hai');
+buildSinglePDF('Vendor Report - '+name, 'Vendor: '+name, list, false);
+}
+function downloadAllClientsPDF(){
+let withEntry = sortClients(clients.filter(c=> trades.some(t=>t.c==c.name)));
+if(!withEntry.length) return alert('Kisi Client ki koi Entry nahi hai');
+if(!confirm(withEntry.length+' Clients ki ALAG-ALAG PDF khulegi - '+withEntry.map(c=>c.name).join(', ')+'. OK dabao.')) return;
+withEntry.forEach((c,i)=>{ setTimeout(()=>{ downloadClientSinglePDF(c.name); }, i*1200); });
+}
+function downloadAllVendorsPDF(){
+let withEntry = vendors.filter(v=> trades.some(t=>t.v==v));
+if(!withEntry.length) return alert('Kisi Vendor ki koi Entry nahi hai');
+if(!confirm(withEntry.length+' Vendors ki ALAG-ALAG PDF khulegi - '+withEntry.join(', ')+'. OK dabao.')) return;
+withEntry.forEach((v,i)=>{ setTimeout(()=>{ downloadVendorSinglePDF(v); }, i*1200); });
+}
+function downloadAllAdminsPDF(){
+let withEntry = admins.filter(a=> trades.some(t=>t.admin==a));
+if(!withEntry.length) return alert('Kisi Admin ki koi Entry nahi hai');
+if(!confirm(withEntry.length+' Admins ki ALAG-ALAG PDF khulegi - '+withEntry.join(', ')+'. OK dabao.')) return;
+withEntry.forEach((a,i)=>{ setTimeout(()=>{ downloadAdminSinglePDF(a); }, i*1200); });
+}
+function downloadAllSeparatePDF(){
+if(!trades.length) return alert('Abhi koi Entry hi nahi hai');
+if(!confirm('Sirf Entry walo ki ALAG-ALAG PDF khulegi. OK dabao?')) return;
+let cList = sortClients(clients.filter(c=> trades.some(t=>t.c==c.name)));
+let vList = vendors.filter(v=> trades.some(t=>t.v==v));
+let aList = admins.filter(a=> trades.some(t=>t.admin==a));
+let delay = 0;
+cList.forEach((c)=>{ setTimeout(()=>{ downloadClientSinglePDF(c.name); }, delay); delay+=1200; });
+vList.forEach((v)=>{ setTimeout(()=>{ downloadVendorSinglePDF(v); }, delay); delay+=1200; });
+aList.forEach((a)=>{ setTimeout(()=>{ downloadAdminSinglePDF(a); }, delay); delay+=1200; });
+alert('Total '+(cList.length+vList.length+aList.length)+' alag-alag PDF khulengi.');
+}
+function resetEntries(){
+if(!trades.length) return alert('Abhi koi Entry hi nahi hai');
+if(!confirm('Sirf ENTRY delete karni hai? Admin, Client, Vendor aur Password BACHE rahenge. Pakka?')) return;
+let c2=prompt('Confirm karne ke liye YES likho','');
+if(c2!=='YES') return alert('Reset cancel ho gaya');
+trades=[]; editId=null; localStorage.setItem('t1',JSON.stringify(trades)); save(); alert('Ho gaya! Sirf Entry delete hui.');
+}
+function clearAll(){if(confirm('Sab delete? Pakka?')){let p=getSavedPass(); localStorage.clear(); if(p) localStorage.setItem('srtPass',p); admins=[];clients=[];vendors=[];trades=[];brkSettings=[];commSettings=[];hideComm=false;selectedAdmin='All';selectedVendor='All';render();}}
+if(getSavedPass()){ } else { document.getElementById('lockScreen').style.display='flex'; }
+</script>
+</body>
+</html>
